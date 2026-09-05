@@ -456,7 +456,7 @@ window.GALI.listo = new Promise(function(res, rej){
   // desde aqui, hacia adelante y hacia atras. Mover esta fecha recoloca
   // el calendario, pero NO toca la plantilla: cada publicacion vive en
   // su casilla (semana, dia), que no depende del ancla.
-  var ANCHOR = "2026-08-31";
+  var ANCHOR = "2026-09-07";
   var WEEKS_MIN = 1, WEEKS_MAX = 8, WEEKS_DEF = 4;
 
   var TYPES = {
@@ -535,7 +535,12 @@ window.GALI.listo = new Promise(function(res, rej){
   function ancla(){ return lunesDe(parseYmd(ANCHOR)); }
   // Lunes en que arranca el ciclo que contiene esa fecha.
   function cicloDe(d){
-    var semanas = Math.floor(difDias(ancla(), lunesDe(d)) / 7);
+    var a = ancla();
+    // Antes del arranque no hay ciclos: la cuenta seguiria hacia atras y
+    // mostraria vueltas negativas que nunca existieron. Se muestra el
+    // primero.
+    if (lunesDe(d) < a) return a;
+    var semanas = Math.floor(difDias(a, lunesDe(d)) / 7);
     var dentro = ((semanas % weeks) + weeks) % weeks;
     return suma(lunesDe(d), -dentro * 7);
   }
