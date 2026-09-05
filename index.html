@@ -345,6 +345,7 @@ body.bloqueado{overflow:hidden}
     <span class="stat" id="cover">&nbsp;</span>
     <span class="stat" id="progText">&nbsp;</span>
     <div class="rail"><span id="rail" style="width:0%"></span></div>
+    <span class="stat" id="progCiclo">&nbsp;</span>
     <div class="legend" id="legend"></div>
   </div>
 </header>
@@ -543,6 +544,13 @@ window.GALI.listo = new Promise(function(res, rej){
   // Fecha real de una casilla dentro del ciclo visible.
   function fechaDe(week, dow){ return suma(cycle, (week - 1) * 7 + dow); }
   function claveCiclo(){ return ymd(cycle); }
+  // En que casilla del ciclo VISIBLE cae hoy. null si se esta mirando
+  // otra vuelta, hacia adelante o hacia atras.
+  function casillaDeHoy(){
+    var off = difDias(cycle, hoy());
+    if (off < 0 || off >= slots()) return null;
+    return {w: Math.floor(off / 7) + 1, d: off % 7};
+  }
 
   /* ---------- estado de envio de esta vuelta ---------- */
   function sentOf(id){ return marks[id] || {}; }
@@ -742,19 +750,51 @@ window.GALI.listo = new Promise(function(res, rej){
     cov.classList.toggle("warn", cubiertas < tot);
     cov.title = cubiertas < tot ? (tot - cubiertas) + " casillas del ciclo siguen vacias" : "El ciclo esta completo";
 
+    // La barra mide HOY, no el ciclo completo: lo que decide la operacion
+    // diaria es si ya salio lo de hoy. El total del ciclo queda al lado,
+    // en segundo plano.
     var vivas = enCiclo();
-    var done, total, text;
-    if (filterCo){
-      total = vivas.length;
-      done = vivas.filter(function(p){ return !!sentOf(p.id)[filterCo]; }).length;
-      text = "<b>" + done + "</b> de <b>" + total + "</b> enviadas a " + esc(coName(filterCo));
-    } else {
-      total = vivas.length * TOTAL_CO;
-      done = vivas.reduce(function(a,p){ return a + sentCount(p); }, 0);
-      text = "<b>" + done + "</b> de <b>" + total + "</b> envios del ciclo";
+    var hs = casillaDeHoy();
+    var foco = hs ? forSlot(hs.w, hs.d) : [];
+    var done = 0, total = 0, text;
+
+    function cuenta(lista){
+      if (filterCo){
+        return {
+          done: lista.filter(function(p){ return !!sentOf(p.id)[filterCo]; }).length,
+          total: lista.length
+        };
+      }
+      return {
+        done: lista.reduce(function(a, p){ return a + sentCount(p); }, 0),
+        total: lista.length * TOTAL_CO
+      };
     }
+
+    if (!hs){
+      // Se esta mirando otra vuelta: hoy no cae en el ciclo visible.
+      var c = cuenta(vivas);
+      done = c.done; total = c.total;
+      text = "<b>" + done + "</b> de <b>" + total + "</b> " +
+             (filterCo ? "enviadas a " + esc(coName(filterCo)) : "envios") + " en esta vuelta";
+    } else if (!foco.length){
+      text = "Hoy no hay nada programado";
+    } else {
+      var h = cuenta(foco);
+      done = h.done; total = h.total;
+      text = "Hoy: <b>" + done + "</b> de <b>" + total + "</b> " +
+             (filterCo ? "enviadas a " + esc(coName(filterCo)) : "envios");
+    }
+
     $("progText").innerHTML = text;
+    $("progText").classList.toggle("warn", !!hs && total > 0 && done < total);
     $("rail").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+
+    // Referencia del ciclo entero, para no perder de vista el avance global.
+    var gc = cuenta(vivas);
+    $("progCiclo").innerHTML = hs
+      ? "ciclo <b>" + gc.done + "</b>/<b>" + gc.total + "</b>"
+      : "";
 
     // Franja exterior del chip = tipo; franja interior = categoria.
     var leyenda = TYPE_KEYS.map(function(k){
