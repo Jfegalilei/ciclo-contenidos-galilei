@@ -95,10 +95,10 @@ reemplazaria el mapa completo y borraria las marcas de las demas.
 ## Modelo de datos
 
 - `plantilla/{id}` — una publicacion del ciclo:
-  `{week: 1-8, dow: 0-6, time, type, familia, title, copy, link, img}`.
+  `{week: 1-8, dow: 0-6, time, type, familia, title, copy, img}`.
   `week` es la semana **dentro del ciclo**, no del ano; `dow` 0 = lunes.
 - `libreria/{id}` — una pieza reutilizable, fuera del ciclo:
-  `{type, familia, grupos, title, copy, link, img}`.
+  `{type, familia, grupos, title, copy, img}`.
 - `envios/{AAAA-MM-DD}` — las marcas de una vuelta, con la fecha del lunes en
   que arranco: `{marks: {idPost: {idCompania: fechaISO}}}`. Cadena vacia = no
   enviado.
