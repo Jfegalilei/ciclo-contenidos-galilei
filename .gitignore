@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Contenido interno: vive en Firestore, no en el repositorio.
+datos-iniciales.json
+importar.html

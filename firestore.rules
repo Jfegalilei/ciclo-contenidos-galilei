@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// Quien puede tocar el calendario: cualquier cuenta de Google cuyo correo
+// termine en el dominio de Galilei y este verificado. Nadie mas lee ni
+// escribe, aunque tenga el enlace de la pagina.
+//
+// El dominio esta escrito aqui Y en config.js. Si cambia, cambialo en los
+// dos: este archivo es el que manda de verdad; config.js solo decide que
+// mensaje ve la persona antes de entrar.
+//
+// Se publica con:  firebase deploy --only firestore:rules
+// o pegando el contenido en la consola, en Firestore > Reglas.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function esDeGalilei() {
+      return request.auth != null
+          && request.auth.token.email_verified == true
+          && request.auth.token.email.lower().matches('.*@galileilearning[.]com');
+    }
+
+    // El ciclo: las 28 casillas de la plantilla.
+    match /plantilla/{id} {
+      allow read, write: if esDeGalilei();
+    }
+
+    // La libreria de retos y anuncios reutilizables.
+    match /libreria/{id} {
+      allow read, write: if esDeGalilei();
+    }
+
+    // Un documento por vuelta del ciclo, con las marcas de envio.
+    match /envios/{vuelta} {
+      allow read, write: if esDeGalilei();
+    }
+
+    // Duracion del ciclo, compartida por todos.
+    match /config/{clave} {
+      allow read, write: if esDeGalilei();
+    }
+
+    // Todo lo demas queda cerrado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

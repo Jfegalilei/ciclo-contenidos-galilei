@@ -1,0 +1,1751 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ciclo de Contenidos Galilei</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Reset minimo: lo traia el envoltorio del artifact y aqui hace falta. */
+html{color-scheme:light dark}
+body{margin:0;padding:0}
+img{max-width:100%}
+[hidden]{display:none !important}
+
+:root{
+  --paper:#eef1ee; --surface:#ffffff; --surface-2:#f7f9f7;
+  --ink:#14191a; --ink-2:#4b5551; --muted:#78827d;
+  --line:#d7ddd7; --line-strong:#bcc5bd;
+  --accent:#0d5f4f; --accent-ink:#ffffff; --accent-soft:#dcebe5;
+  --t-reto:#9a4a12; --t-anuncio:#1c5580; --t-recordatorio:#5f4b8b;
+  --f-participacion:#0891b2; --f-juego:#16a34a; --f-creativo:#c026d3;
+  --f-negocio:#ca8a04; --f-personal:#e11d48; --f-temporada:#4338ca;
+  --danger:#a3301f;
+  --shadow:0 14px 40px rgba(20,25,26,.16);
+  --sans:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --display:"Archivo","Source Sans 3",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f1412; --surface:#161c19; --surface-2:#1b221f;
+    --ink:#e7ece8; --ink-2:#aab5af; --muted:#7f8a84;
+    --line:#28312d; --line-strong:#3b4640;
+    --accent:#4bb99c; --accent-ink:#08120f; --accent-soft:#17332c;
+    --t-reto:#d98a4e; --t-anuncio:#6aa8dd; --t-recordatorio:#a794d8;
+    --f-participacion:#22d3ee; --f-juego:#4ade80; --f-creativo:#e879f9;
+    --f-negocio:#fbbf24; --f-personal:#fb7185; --f-temporada:#818cf8;
+    --danger:#e08070;
+    --shadow:0 14px 40px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f1412; --surface:#161c19; --surface-2:#1b221f;
+  --ink:#e7ece8; --ink-2:#aab5af; --muted:#7f8a84;
+  --line:#28312d; --line-strong:#3b4640;
+  --accent:#4bb99c; --accent-ink:#08120f; --accent-soft:#17332c;
+  --t-reto:#d98a4e; --t-anuncio:#6aa8dd; --t-recordatorio:#a794d8;
+  --f-participacion:#22d3ee; --f-juego:#4ade80; --f-creativo:#e879f9;
+  --f-negocio:#fbbf24; --f-personal:#fb7185; --f-temporada:#818cf8;
+  --danger:#e08070;
+  --shadow:0 14px 40px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.label{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- barra de operacion ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar-row{display:flex;align-items:center;gap:18px;padding:12px 20px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;gap:1px;margin-right:auto}
+.brand h1{font-family:var(--display);font-weight:700;font-size:17px;margin:0;letter-spacing:-.01em}
+.brand p{margin:0;font-size:12.5px;color:var(--muted)}
+
+.cyclenav{display:flex;align-items:center;gap:2px}
+.cyclenav .rango{display:flex;flex-direction:column;align-items:center;min-width:212px;line-height:1.25}
+.cyclenav .rango b{font-family:var(--display);font-weight:600;font-size:15.5px;font-variant-numeric:tabular-nums}
+.cyclenav .rango span{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.iconbtn{display:grid;place-items:center;width:32px;height:32px;background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;color:var(--ink-2)}
+.iconbtn:hover{background:var(--surface-2);border-color:var(--line)}
+.iconbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:7px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;font-size:13.5px;font-weight:600;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:var(--accent);filter:brightness(1.08)}
+.btn-quiet{border-color:transparent;background:none;color:var(--ink-2);padding:6px 8px;font-weight:400;font-size:13px}
+.btn-quiet:hover{background:var(--surface-2);color:var(--ink)}
+.btn-danger{color:var(--danger);border-color:transparent;background:none;padding:6px 8px;font-weight:400;font-size:13px}
+.btn-danger:hover{background:var(--surface-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+.filter{display:flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--line-strong);border-radius:7px}
+.filter .label{white-space:nowrap}
+.filter select{border:none;background:none;font-size:13px;font-weight:600;padding:2px 0;cursor:pointer;max-width:184px}
+.filter:focus-within{border-color:var(--accent)}
+.filter.on{border-color:var(--accent);background:var(--accent-soft)}
+
+.summary{display:flex;align-items:center;gap:14px;padding:0 20px 11px;flex-wrap:wrap}
+.rail{flex:1 1 160px;min-width:130px;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.rail span{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .3s ease}
+.stat{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat b{color:var(--ink);font-weight:500}
+.stat.warn b{color:var(--danger)}
+.legend{display:flex;gap:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.legend .fam i{width:5px;height:5px;border-radius:50%;margin-right:6px}
+
+/* ---------- disposicion: libreria + malla ---------- */
+.shell{display:flex;align-items:flex-start}
+.lib{width:302px;flex:none;align-self:flex-start;position:sticky;top:var(--tb,96px);max-height:calc(100vh - var(--tb,96px));overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:10px;padding:14px}
+.lib.oculta{display:none}
+.lib-head{display:flex;align-items:center;gap:8px}
+.lib-head .label{margin-right:auto}
+.lib-tools{display:flex;flex-direction:column;gap:7px}
+.lib-row{display:flex;gap:6px}
+.lib-tools input{flex:1;min-width:0;padding:6px 9px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);font-size:13px}
+.lib-tools select{flex:0 0 auto;max-width:104px;padding:6px 4px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);font-size:12.5px;cursor:pointer}
+.lib-tools input:focus,.lib-tools select:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.tfilter{display:flex;gap:4px;flex-wrap:wrap}
+.tfilter button{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:3px 7px;border:1px solid var(--line);border-radius:5px;background:var(--surface-2);color:var(--muted);cursor:pointer}
+.tfilter button i{width:6px;height:6px;border-radius:50%;background:var(--fc,var(--muted));flex:none}
+.tfilter button:hover{border-color:var(--line-strong);color:var(--ink-2)}
+.tfilter button.on{border-color:var(--fc,var(--accent));color:var(--fc,var(--accent));background:var(--surface);font-weight:500}
+.tfilter button.on i{box-shadow:0 0 0 2px var(--surface-2)}
+.lib-list{display:flex;flex-direction:column;gap:7px}
+
+.libcard{border:1px solid var(--line);border-left:3px solid var(--chipc,var(--line-strong));border-radius:7px;background:var(--surface-2);padding:8px 9px;cursor:grab;display:flex;flex-direction:column;gap:3px}
+.libcard:hover{border-color:var(--line-strong);border-left-color:var(--chipc,var(--line-strong));background:var(--surface)}
+.libcard:active{cursor:grabbing}
+.libcard.arrastrando{opacity:.4}
+.libcard .ltop{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase}
+.libcard .lt{color:var(--fc,var(--muted));font-weight:500}
+.libcard .lveces{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.libcard h4{margin:0;font-family:var(--display);font-size:13.5px;font-weight:600;line-height:1.3}
+.libcard p{margin:0;font-size:12px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.libcard .lacts{display:flex;align-items:center;gap:4px;margin-top:3px}
+.libcard .lacts button:not(.trash){font-size:11.5px;padding:2px 6px;border:none;background:none;color:var(--muted);cursor:pointer;border-radius:4px}
+.libcard .lacts button:not(.trash):hover{background:var(--surface-2);color:var(--ink)}
+.libcard .lacts .trash{width:24px;height:24px;margin-left:auto}
+.libcard .lacts .trash svg{width:13px;height:13px}
+
+/* ---------- malla del ciclo: 4 semanas x 7 dias ---------- */
+.gridwrap{flex:1;min-width:0;overflow-x:auto;padding:16px 20px 60px}
+.cal{min-width:900px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.dow,.weeks{display:grid;grid-template-columns:104px repeat(7,minmax(0,1fr))}
+.dow{border-bottom:1px solid var(--line);background:var(--surface-2)}
+.dow div{padding:7px 10px;border-right:1px solid var(--line)}
+.dow div:last-child{border-right:none}
+
+.wk{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface-2)}
+.wk b{font-family:var(--display);font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.wk span{font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.wk.actual{background:var(--accent-soft)}
+.wk.actual b{color:var(--accent)}
+
+.day{position:relative;min-height:132px;padding:7px 7px 8px;border:none;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px;cursor:pointer;background:var(--surface);text-align:left;font:inherit;color:inherit}
+.day:nth-child(8n){border-right:none}
+.day:hover{background:var(--surface-2)}
+.day.weekend{background:var(--surface-2)}
+.day.weekend:hover{background:var(--surface)}
+.daynum{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:20px;height:20px;align-self:flex-start}
+.day.today .daynum{background:var(--accent);color:var(--accent-ink);border-radius:5px;padding:0 6px;font-weight:500}
+.day.pasado{opacity:.62}
+.day .add{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);display:none;place-items:center;cursor:pointer;padding:0;line-height:1}
+.day .add svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.day:hover .add{display:grid}
+.day.over{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.day.over .gap{border-top-color:var(--accent)}
+.gap{margin-top:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px dashed var(--line-strong);padding-top:5px}
+
+.chip{display:flex;flex-direction:column;gap:1px;padding:4px 6px 5px 10px;border-radius:4px;background:var(--surface-2);border-left:5px solid var(--chipc,var(--line-strong));box-shadow:inset 2px 0 0 var(--famc,transparent);line-height:1.3;overflow:hidden}
+.day.weekend .chip{background:var(--surface)}
+.chip .meta{display:flex;align-items:baseline;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip .t{flex:none}
+.chip .cnt{margin-left:auto;flex:none;color:var(--chipc,var(--muted))}
+.chip .n{font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{cursor:grab}
+.chip:active{cursor:grabbing}
+.chip.arrastrando{opacity:.4}
+.chip.done{opacity:.5}
+.chip.done .n{text-decoration:line-through}
+.day .more{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding-left:2px}
+
+.notice{margin:0 20px 16px;padding:11px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:7px;background:var(--surface);font-size:13.5px;color:var(--ink-2);display:flex;gap:9px;align-items:flex-start}
+.notice.err{border-left-color:var(--danger)}
+.notice svg{width:15px;height:15px;flex:none;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- panel del dia ---------- */
+.scrim{position:fixed;inset:0;background:rgba(10,14,13,.28);z-index:40;opacity:0;pointer-events:none;transition:opacity .22s ease}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(478px,100vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);z-index:50;display:flex;flex-direction:column;transform:translateX(101%);transition:transform .24s cubic-bezier(.4,0,.2,1)}
+.drawer.open{transform:none}
+.dhead{display:flex;align-items:flex-start;gap:12px;padding:16px 18px 13px;border-bottom:1px solid var(--line)}
+.dhead h2{font-family:var(--display);font-weight:600;font-size:19px;margin:2px 0 0;text-transform:capitalize;letter-spacing:-.01em}
+.dhead .sub{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+/* El panel usa fondo hundido para que cada publicacion se lea como una
+   pieza suelta: cada una arranca con una tapa del color de su tipo y
+   termina en su propia grilla de envio. */
+.dbody{flex:1;overflow-y:auto;padding:16px 16px 28px;display:flex;flex-direction:column;gap:18px;background:var(--surface-2)}
+
+.post{border:1px solid var(--line-strong);border-top:5px solid var(--chipc,var(--line-strong));border-radius:10px;background:var(--surface);overflow:hidden;box-shadow:inset 0 2px 0 var(--famc,transparent),0 1px 3px rgba(0,0,0,.07)}
+.post-top{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.post-top .ord{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;padding:2px 6px;border-radius:4px;color:var(--surface);background:var(--chipc,var(--muted));font-weight:500}
+.post-top .t{font-family:var(--mono);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.ftag{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--famc,var(--line-strong));color:var(--famc,var(--muted));font-weight:500}
+.post-top .prog{margin-left:auto;flex:none;font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.post-top .prog.full{color:var(--accent);font-weight:500}
+.post h3{margin:0;padding:11px 12px 0;font-family:var(--display);font-size:15px;font-weight:600;line-height:1.35;text-wrap:balance}
+.copybox{margin:9px 12px 0;padding:10px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);font-size:13.5px;white-space:pre-wrap;word-break:break-word;max-height:212px;overflow-y:auto}
+.tmpl{display:inline-flex;align-items:center;gap:6px;margin:9px 12px 0;font-size:12.5px;color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;align-self:flex-start}
+.tmpl:hover{border-bottom-color:var(--accent)}
+.tmpl svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.post-acts{display:flex;align-items:center;gap:6px;padding:11px 12px;flex-wrap:wrap}
+.post-acts .sp{margin-left:auto}
+.post.done h3{opacity:.6}
+.post.done .copybox{opacity:.65}
+
+/* Dialogo de confirmacion, por encima del editor */
+#cwrap{z-index:95}
+.cbox{width:min(430px,100%);background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.cbox .cbody{padding:20px}
+.cbox h3{margin:0 0 7px;font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.cbox p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.cbox p b{color:var(--ink);font-weight:600}
+.cbox .cacts{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 20px}
+.btn-del{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn-del:hover{background:var(--danger);border-color:var(--danger);color:#fff;filter:brightness(1.1)}
+
+.trash{width:28px;height:28px;color:var(--danger);border-color:transparent}
+.trash svg{width:14px;height:14px}
+.trash:hover{background:var(--danger);border-color:var(--danger);color:#fff}
+
+.sendhead{display:flex;align-items:center;gap:8px;padding:10px 12px 0;border-top:1px solid var(--line)}
+.sendhead .sp{margin-left:auto}
+.sendgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:8px 12px 12px}
+.co-tog{display:flex;align-items:center;gap:7px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);cursor:pointer;font-size:12.5px;text-align:left;overflow:hidden}
+.co-tog:hover{border-color:var(--line-strong)}
+.co-tog .box{width:13px;height:13px;border:1.5px solid var(--line-strong);border-radius:4px;display:grid;place-items:center;flex:none}
+.co-tog .box svg{width:9px;height:9px;fill:none;stroke:var(--accent-ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.co-tog .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.co-tog.on{border-color:var(--accent);background:var(--accent-soft)}
+.co-tog.on .box{background:var(--accent);border-color:var(--accent)}
+.co-tog.on .box svg{opacity:1}
+.co-tog.spot{box-shadow:0 0 0 2px var(--accent-soft),0 0 0 3px var(--accent)}
+.co-tog:disabled{opacity:.5;cursor:not-allowed}
+
+/* Editor de la libreria: modal centrado, para ver el copy completo */
+.mwrap{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,14,13,.45)}
+.mwrap.open{display:flex}
+.mbox{width:min(660px,100%);max-height:88vh;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.mhead{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.mhead .label{margin-right:auto}
+.mbox .editor{border:none;border-radius:0;padding:20px;gap:16px;overflow-y:auto}
+.mbox .editor .row{gap:14px}
+.mbox .editor .field input,.mbox .editor .field select,.mbox .editor .field textarea{padding:9px 11px;font-size:14px}
+.mbox .editor .field textarea{min-height:320px}
+.mbox .editor-acts{position:sticky;bottom:-20px;background:var(--surface);padding:14px 0 0;margin-bottom:-4px;border-top:1px solid var(--line)}
+
+/* Imagenes: van embebidas en el documento, comprimidas en el navegador */
+.thumb{display:block;margin:10px 12px 0;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--surface-2)}
+.thumb img{display:block;width:100%;height:auto;max-height:280px;object-fit:contain}
+.libcard .thumb{margin:4px 0 0}
+.libcard .thumb img{max-height:104px;object-fit:cover}
+.chip .pic{flex:none;width:9px;height:9px;opacity:.75}
+.chip .pic svg{width:9px;height:9px;display:block;fill:none;stroke:currentColor;stroke-width:2.2}
+
+.imgfield{display:flex;flex-direction:column;gap:7px}
+.imgprev{position:relative;border:1px dashed var(--line-strong);border-radius:8px;overflow:hidden;background:var(--surface-2);min-height:56px;display:flex;align-items:center;justify-content:center}
+.imgprev img{display:block;width:100%;height:auto;max-height:210px;object-fit:contain}
+.imgprev .vacia{font-size:12.5px;color:var(--muted);padding:16px 12px;text-align:center}
+.imgacts{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.imgacts input[type=file]{display:none}
+.peso{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.editor{border:1px solid var(--accent);border-radius:9px;background:var(--surface);padding:13px;display:flex;flex-direction:column;gap:11px}
+.editor .row{display:flex;gap:9px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:4px;flex:1 1 130px;min-width:0}
+.field input,.field select,.field textarea{width:100%;padding:7px 9px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);font-size:13.5px}
+.field textarea{resize:vertical;min-height:120px;line-height:1.5;font-family:var(--sans)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.hint{font-size:11.5px;color:var(--muted)}
+.editor-acts{display:flex;gap:8px;align-items:center}
+
+.empty{padding:22px 8px;text-align:center;color:var(--muted);font-size:13.5px}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:8px;font-size:13.5px;z-index:70;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;box-shadow:var(--shadow);max-width:min(420px,92vw)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:960px){
+  .shell{flex-direction:column}
+  .lib{width:100%;position:static;max-height:none;border-right:none;border-bottom:1px solid var(--line)}
+  .lib-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+}
+@media (max-width:760px){
+  .drawer{width:100vw;border-left:none}
+  .topbar-row{gap:12px;padding:11px 14px}
+  .brand{flex:1 1 100%;margin-right:0}
+  .gridwrap{padding:12px 14px 48px}
+  .summary{padding:0 14px 10px}
+  .notice{margin:0 14px 14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important}
+}
+
+/* ---------- sesion ---------- */
+.sesion{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+/* ---------- pantalla de entrada ---------- */
+body.bloqueado{overflow:hidden}
+.puerta{position:fixed;inset:0;z-index:200;background:var(--paper);display:flex;
+        align-items:center;justify-content:center;padding:24px}
+.pbox{width:min(420px,100%);background:var(--surface);border:1px solid var(--line-strong);
+      border-radius:12px;box-shadow:var(--shadow);padding:28px;display:flex;
+      flex-direction:column;gap:14px;text-align:left}
+.pbox .label{margin:0}
+.pbox h2{margin:0;font-family:var(--display);font-size:21px;font-weight:700;
+         letter-spacing:-.015em;text-wrap:balance}
+.pbox p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.pbox .btn{align-self:flex-start;margin-top:2px}
+#puertaMsg{font-size:12.5px;color:var(--muted);min-height:1.2em}
+#puertaMsg.err{color:var(--danger)}
+</style>
+</head>
+<body class="bloqueado">
+
+<header class="topbar" id="topbar">
+  <div class="topbar-row">
+    <div class="brand">
+      <h1>Ciclo de Contenidos</h1>
+      <p>4 semanas que se repiten sin parar, iguales para las 12 companias</p>
+    </div>
+    <div class="cyclenav">
+      <button class="iconbtn" id="prev" aria-label="Ciclo anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span class="rango"><b id="rangoTxt">&nbsp;</b><span id="rangoSub">&nbsp;</span></span>
+      <button class="iconbtn" id="next" aria-label="Ciclo siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+    <button class="btn btn-quiet" id="today">Ciclo actual</button>
+    <button class="btn btn-quiet" id="libToggle">Libreria</button>
+    <label class="filter">
+      <span class="label">Duracion</span>
+      <select id="weekSel" title="Cuantas semanas dura el ciclo antes de repetirse"></select>
+    </label>
+    <label class="filter" id="filter">
+      <span class="label">Seguir a</span>
+      <select id="fltCompany"></select>
+    </label>
+    <span class="sesion"><span id="quien"></span><button class="btn btn-quiet" id="salir" hidden>Salir</button></span>
+  </div>
+  <div class="summary">
+    <span class="stat" id="cover">&nbsp;</span>
+    <span class="stat" id="progText">&nbsp;</span>
+    <div class="rail"><span id="rail" style="width:0%"></span></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</header>
+
+<div id="notice"></div>
+
+<div class="shell">
+  <aside class="lib" id="lib">
+    <div class="lib-head">
+      <span class="label">Libreria</span>
+      <span class="stat" id="libCount">&nbsp;</span>
+      <button class="btn btn-quiet" id="libNew">Nuevo</button>
+    </div>
+    <div class="lib-tools">
+      <div class="lib-row">
+        <input id="libSearch" placeholder="Buscar en la libreria" autocomplete="off">
+        <select id="libTypeSel" title="Filtrar por tipo"></select>
+      </div>
+      <div class="tfilter" id="libFams"></div>
+    </div>
+    <div class="lib-list" id="libList"></div>
+  </aside>
+
+  <div class="gridwrap">
+    <div class="cal">
+      <div class="dow" id="dow"></div>
+      <div class="weeks" id="weeks"></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dhead">
+    <div style="flex:1;min-width:0">
+      <span class="label" id="dLabel">&nbsp;</span>
+      <h2 id="dTitle">&nbsp;</h2>
+      <p class="sub" id="dSub">&nbsp;</p>
+    </div>
+    <button class="iconbtn" id="dClose" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="dbody" id="dBody"></div>
+</aside>
+
+<div class="mwrap" id="mwrap" role="dialog" aria-modal="true" aria-label="Editar pieza de la libreria">
+  <div class="mbox" id="mbox"></div>
+</div>
+
+<div class="mwrap" id="cwrap" role="alertdialog" aria-modal="true" aria-labelledby="cTitle">
+  <div class="cbox">
+    <div class="cbody">
+      <h3 id="cTitle">&nbsp;</h3>
+      <p id="cTexto">&nbsp;</p>
+    </div>
+    <div class="cacts">
+      <button class="btn btn-quiet" id="cNo">Cancelar</button>
+      <button class="btn btn-del" id="cSi">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="puerta" id="puerta">
+  <div class="pbox">
+    <span class="label">Ciclo de contenidos</span>
+    <h2>Entra con tu correo de Galilei</h2>
+    <p>El calendario es el mismo para todo el equipo: lo que cambies aqui lo ve
+       cualquiera que lo abra. Solo las cuentas de Galilei pueden verlo y editarlo.</p>
+    <button class="btn btn-primary" id="entrar">Entrar con Google</button>
+    <span id="puertaMsg"></span>
+  </div>
+</div>
+
+<script>
+// La aplicacion arranca antes que el modulo de Firebase, asi que espera
+// en esta promesa: se resuelve con el almacen cuando alguien entro.
+window.GALI = {};
+window.GALI.listo = new Promise(function(res, rej){
+  window.GALI.abrir = res;
+  window.GALI.fallar = rej;
+});
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     MODELO
+     La programacion es un CICLO FIJO de 4 semanas (28 dias) que
+     corre sin parar. No tiene nada que ver con los meses: un ciclo
+     puede empezar en un mes y terminar en otro.
+       coleccion "plantilla": {week: 1-4, dow: 0-6, time, type, title, copy, link}
+       week 1-4 = semana dentro del ciclo; dow 0 = lunes, 6 = domingo.
+     Son 28 casillas fijas, siempre existen todas: cualquier dia del
+     ano cae exactamente en una.
+     Lo unico que cambia de una vuelta a la siguiente es el registro
+     de envio:
+       documento "envios/<AAAA-MM-DD del lunes en que arranca el ciclo>":
+         {marks: {idPost: {idCompania: fechaISO}}}
+     Cadena vacia = no enviado; update() fusiona objetos anidados y
+     no puede borrar claves, y esa fusion deja que dos personas
+     marquen publicaciones distintas sin pisarse.
+     ============================================================ */
+
+  // Lunes de referencia: arranque del ciclo 1. Todo lo demas se cuenta
+  // desde aqui, hacia adelante y hacia atras. Mover esta fecha recoloca
+  // el calendario, pero NO toca la plantilla: cada publicacion vive en
+  // su casilla (semana, dia), que no depende del ancla.
+  var ANCHOR = "2026-08-31";
+  var WEEKS_MIN = 1, WEEKS_MAX = 8, WEEKS_DEF = 4;
+
+  var TYPES = {
+    reto:         {label:"Reto",         color:"var(--t-reto)"},
+    anuncio:      {label:"Anuncio",      color:"var(--t-anuncio)"},
+    recordatorio: {label:"Recordatorio", color:"var(--t-recordatorio)"}
+  };
+  var TYPE_KEYS = ["reto","anuncio","recordatorio"];
+
+  // Categorias de la libreria. Van con color propio en la esquina de
+  // cada ficha, aparte del tipo.
+  var FAMILIAS = {
+    participacion: {label:"Participacion", color:"var(--f-participacion)"},
+    juego:         {label:"Juego",         color:"var(--f-juego)"},
+    creativo:      {label:"Creativo",      color:"var(--f-creativo)"},
+    negocio:       {label:"Negocio",       color:"var(--f-negocio)"},
+    personal:      {label:"Personal",      color:"var(--f-personal)"},
+    temporada:     {label:"Temporada",     color:"var(--f-temporada)"}
+  };
+  var FAM_KEYS = ["participacion","juego","creativo","negocio","personal","temporada"];
+
+  var COMPANIES = [
+    {id:"niku",             name:"Niku"},
+    {id:"power-shakes",     name:"Power Shakes"},
+    {id:"liso-saludable",   name:"Liso Saludable"},
+    {id:"maximo",           name:"Maximo"},
+    {id:"auteco",           name:"Auteco"},
+    {id:"smash-avocaderia", name:"Smash Avocadería"},
+    {id:"general-cafe",     name:"General Cafe"},
+    {id:"oni-nikkei",       name:"ONI Nikkei"},
+    {id:"lavocaderia",      name:"Lavocadería"},
+    {id:"mimos",            name:"Mimos"},
+    {id:"machetico",        name:"Machetico"},
+    {id:"chick-fil-a",      name:"Chick-Fil-A"}
+  ];
+  var TOTAL_CO = COMPANIES.length;
+  // Duracion del ciclo: vive en la db para que sea igual para todos.
+  var weeks = WEEKS_DEF;
+  function slots(){ return weeks * 7; }
+
+  var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  var MES_CORTO = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  var DOW = ["lunes","martes","miercoles","jueves","viernes","sabado","domingo"];
+  var MAX_CHIPS = 4;
+
+  var db = null, dbReady = false, unsubTpl = null, unsubMarks = null, unsubLib = null, unsubCfg = null;
+  var tpl = [], marks = {}, cycle = null, selected = null, editing = null, filterCo = "";
+  var lib = [], libQ = "", libType = "", libFam = "", libEdit = null;
+  var toastTimer = null;
+
+  function $(id){ return document.getElementById(id); }
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function coName(id){
+    for (var i = 0; i < TOTAL_CO; i++){ if (COMPANIES[i].id === id) return COMPANIES[i].name; }
+    return "";
+  }
+
+  /* ---------- fechas y ciclo ---------- */
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function ymd(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
+  function parseYmd(s){ var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+  function hoy(){ var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+  function suma(d, dias){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + dias); return x; }
+  function difDias(a, b){ return Math.round((b - a) / 86400000); }
+  function lunesDe(d){ return suma(d, -((d.getDay() + 6) % 7)); }
+  function corta(d){ return d.getDate() + " " + MES_CORTO[d.getMonth()]; }
+  function larga(d){ return DOW[(d.getDay()+6)%7] + " " + d.getDate() + " de " + MESES[d.getMonth()]; }
+
+  // El ancla se normaliza a su lunes, por si algun dia se cambia por
+  // una fecha que no caiga en lunes.
+  function ancla(){ return lunesDe(parseYmd(ANCHOR)); }
+  // Lunes en que arranca el ciclo que contiene esa fecha.
+  function cicloDe(d){
+    var semanas = Math.floor(difDias(ancla(), lunesDe(d)) / 7);
+    var dentro = ((semanas % weeks) + weeks) % weeks;
+    return suma(lunesDe(d), -dentro * 7);
+  }
+  // Numero de vuelta, solo para nombrar el ciclo en la barra.
+  function vuelta(d){ return Math.floor(difDias(ancla(), d) / slots()) + 1; }
+  // Fecha real de una casilla dentro del ciclo visible.
+  function fechaDe(week, dow){ return suma(cycle, (week - 1) * 7 + dow); }
+  function claveCiclo(){ return ymd(cycle); }
+
+  /* ---------- estado de envio de esta vuelta ---------- */
+  function sentOf(id){ return marks[id] || {}; }
+  function sentCount(p){
+    var s = sentOf(p.id), n = 0;
+    for (var i = 0; i < TOTAL_CO; i++){ if (s[COMPANIES[i].id]) n++; }
+    return n;
+  }
+  // "Listo" depende del punto de vista: con filtro, listo para esa
+  // compania; sin filtro, listo cuando salio en las 12.
+  function isDone(p){
+    return filterCo ? !!sentOf(p.id)[filterCo] : sentCount(p) === TOTAL_CO;
+  }
+  // Publicaciones dentro del largo actual del ciclo. Las que quedaron
+  // en semanas de mas al acortarlo NO se borran: siguen en la db,
+  // fuera de vista, y reaparecen si se vuelve a ampliar.
+  function enCiclo(){ return tpl.filter(function(p){ return p.week <= weeks; }); }
+  function guardadas(){ return tpl.filter(function(p){ return p.week > weeks; }); }
+
+  function forSlot(week, dow){
+    return tpl.filter(function(p){ return p.week === week && p.dow === dow; })
+              .sort(function(a,b){ return (a.time || "99:99").localeCompare(b.time || "99:99"); });
+  }
+
+  /* ---------- avisos ---------- */
+  function toast(msg){
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2800);
+  }
+  var ICON_INFO = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>';
+  // Dos canales que conviven: el de estado/errores (notice) y el que
+  // calcula la propia vista en cada render (aviso).
+  var pinned = "", auto = "";
+  function bloque(msg, kind){
+    return '<div class="notice' + (kind === "err" ? " err" : "") + '">' + ICON_INFO + "<span>" + esc(msg) + "</span></div>";
+  }
+  function paintNotice(){ $("notice").innerHTML = pinned + auto; }
+  function notice(msg, kind){
+    pinned = msg ? bloque(msg, kind) : "";
+    paintNotice();
+  }
+  function aviso(msg){
+    auto = msg ? bloque(msg) : "";
+    paintNotice();
+  }
+
+  /* ---------- errores de db ---------- */
+  function describe(e){
+    var code = (e && e.code) || "";
+    // Firestore separa las palabras con guion; el calendario nacio con
+    // guion bajo. Se aceptan las dos formas.
+    code = code.replace("firestore/", "").replace(/-/g, "_");
+    if (code === "invalid_argument" || code === "transform_error") return "El dato no se pudo guardar: revisa la semana y la hora.";
+    if (code === "permission_denied") return "Tu cuenta no tiene permiso para cambiar el calendario. Entra con tu correo de Galilei.";
+    if (code === "unauthenticated") return "Se cerro tu sesion. Vuelve a entrar con tu correo de Galilei.";
+    if (code === "quota_exceeded") return "El ciclo llego a su tope de publicaciones. Elimina algunas para poder crear mas.";
+    if (code === "resource_exhausted") return "Demasiados cambios seguidos. Espera unos segundos y vuelve a intentar.";
+    if (code === "revoked") return "Se cerro el acceso al calendario. La vista quedo en solo lectura.";
+    if (code === "not_granted" || code === "capability_disabled" || code === "capability_removed") return "Esta vista no tiene acceso al almacenamiento del calendario.";
+    if (code === "unavailable") return "Sin conexion con el calendario. Revisa tu internet.";
+    return "No se pudo guardar. Reintenta en un momento.";
+  }
+  function readOnly(){
+    dbReady = false;
+    if (unsubTpl){ try { unsubTpl(); } catch(e){} unsubTpl = null; }
+    if (unsubMarks){ try { unsubMarks(); } catch(e){} unsubMarks = null; }
+    if (unsubLib){ try { unsubLib(); } catch(e){} unsubLib = null; }
+    if (unsubCfg){ try { unsubCfg(); } catch(e){} unsubCfg = null; }
+    render();
+  }
+  function write(fn){
+    return fn().catch(function(e){
+      if (e && e.code === "unavailable"){
+        return new Promise(function(r){ setTimeout(r, 400 + Math.random() * 400); }).then(fn);
+      }
+      throw e;
+    }).catch(function(e){
+      toast(describe(e));
+      if (e && e.code === "revoked"){ notice(describe(e), "err"); readOnly(); }
+      throw e;
+    });
+  }
+
+  /* ---------- suscripciones ---------- */
+  // La plantilla del ciclo es unica: se suscribe una sola vez.
+  function subscribeTpl(){
+    unsubTpl = db.collection("plantilla").orderBy("week").onSnapshot(function(snap){
+      tpl = snap.docs.map(function(d){
+        var b = d.data() || {};
+        var w = parseInt(b.week, 10), dw = parseInt(b.dow, 10);
+        return {
+          id: d.id,
+          week: (w >= 1 && w <= WEEKS_MAX) ? w : 1,
+          dow: (dw >= 0 && dw <= 6) ? dw : 0,
+          familia: FAMILIAS[b.familia] ? b.familia : "",
+          img: b.img || "",
+          time: b.time || "",
+          type: TYPES[b.type] ? b.type : "anuncio",
+          title: b.title || "",
+          copy: b.copy || "",
+          link: b.link || ""
+        };
+      });
+      dbReady = true;
+      notice("");
+      render();
+    }, function(e){
+      notice(describe(e), "err");
+      readOnly();
+    });
+  }
+  // Duracion del ciclo: una sola config compartida por todos.
+  // Acortar solo cambia este numero; ninguna publicacion se borra.
+  function subscribeCfg(){
+    unsubCfg = db.doc("config/ciclo").onSnapshot(function(snap){
+      var b = snap.exists ? (snap.data() || {}) : {};
+      var n = parseInt(b.weeks, 10);
+      var nuevo = (n >= WEEKS_MIN && n <= WEEKS_MAX) ? n : WEEKS_DEF;
+      if (nuevo === weeks) return;
+      weeks = nuevo;
+      // El largo del ciclo define donde empieza: hay que recolocarse.
+      cycle = cicloDe(hoy());
+      selected = null; editing = null;
+      marks = {};
+      render();
+      subscribeMarks();
+    }, function(e){
+      notice(describe(e), "err");
+    });
+  }
+  function setWeeks(n){
+    var ref = db.doc("config/ciclo");
+    write(function(){
+      return ref.update({weeks: n}).catch(function(e){
+        if (e && e.code === "invalid_argument") return ref.set({weeks: n});
+        throw e;
+      });
+    }).then(function(){
+      toast("El ciclo ahora dura " + n + (n === 1 ? " semana." : " semanas."));
+    }, function(){ $("weekSel").value = weeks; });
+  }
+
+  // La libreria: retos y anuncios reutilizables, fuera del ciclo.
+  function subscribeLib(){
+    unsubLib = db.collection("libreria").orderBy("title").onSnapshot(function(snap){
+      lib = snap.docs.map(function(d){
+        var b = d.data() || {};
+        return {
+          id: d.id,
+          type: TYPES[b.type] ? b.type : "reto",
+          familia: FAMILIAS[b.familia] ? b.familia : "",
+          grupos: parseInt(b.grupos, 10) || 0,
+          img: b.img || "",
+          title: b.title || "",
+          copy: b.copy || "",
+          link: b.link || ""
+        };
+      });
+      renderLib();
+    }, function(e){
+      notice(describe(e), "err");
+    });
+  }
+
+  // El registro de envio si cambia con cada vuelta del ciclo.
+  function subscribeMarks(){
+    if (unsubMarks){ try { unsubMarks(); } catch(e){} unsubMarks = null; }
+    unsubMarks = db.doc("envios/" + claveCiclo()).onSnapshot(function(snap){
+      var b = snap.exists ? (snap.data() || {}) : {};
+      marks = (b.marks && typeof b.marks === "object") ? b.marks : {};
+      render();
+    }, function(e){
+      notice(describe(e), "err");
+      readOnly();
+    });
+  }
+
+  /* ---------- render ---------- */
+  function render(){ renderHeader(); renderGrid(); renderDrawer(); renderLib(); }
+
+  function renderHeader(){
+    var fin = suma(cycle, slots() - 1);
+    $("rangoTxt").textContent = corta(cycle) + " - " + corta(fin);
+    $("rangoSub").textContent = "Ciclo " + vuelta(cycle) +
+      (cycle.getFullYear() !== fin.getFullYear() ? " / " + cycle.getFullYear() + "-" + fin.getFullYear() : " / " + fin.getFullYear());
+
+    // Cobertura: cuantas casillas del ciclo vigente tienen algo programado.
+    var llenas = {};
+    enCiclo().forEach(function(p){ llenas[p.week + ":" + p.dow] = 1; });
+    var cubiertas = Object.keys(llenas).length;
+    var cov = $("cover");
+    var tot = slots();
+    cov.innerHTML = "<b>" + cubiertas + "</b> de <b>" + tot + "</b> dias cubiertos";
+    cov.classList.toggle("warn", cubiertas < tot);
+    cov.title = cubiertas < tot ? (tot - cubiertas) + " casillas del ciclo siguen vacias" : "El ciclo esta completo";
+
+    var vivas = enCiclo();
+    var done, total, text;
+    if (filterCo){
+      total = vivas.length;
+      done = vivas.filter(function(p){ return !!sentOf(p.id)[filterCo]; }).length;
+      text = "<b>" + done + "</b> de <b>" + total + "</b> enviadas a " + esc(coName(filterCo));
+    } else {
+      total = vivas.length * TOTAL_CO;
+      done = vivas.reduce(function(a,p){ return a + sentCount(p); }, 0);
+      text = "<b>" + done + "</b> de <b>" + total + "</b> envios del ciclo";
+    }
+    $("progText").innerHTML = text;
+    $("rail").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+
+    // Franja exterior del chip = tipo; franja interior = categoria.
+    var leyenda = TYPE_KEYS.map(function(k){
+      var n = vivas.filter(function(p){ return p.type === k; }).length;
+      return '<span class="stat"><i style="background:' + TYPES[k].color + '"></i>' + n + " " + TYPES[k].label.toLowerCase() + (n === 1 ? "" : "s") + "</span>";
+    });
+    FAM_KEYS.forEach(function(k){
+      var n = vivas.filter(function(p){ return p.familia === k; }).length;
+      if (!n) return;
+      leyenda.push('<span class="stat fam"><i style="background:' + FAMILIAS[k].color + '"></i>' + n + " " + FAMILIAS[k].label.toLowerCase() + "</span>");
+    });
+    $("legend").innerHTML = leyenda.join("");
+    $("filter").classList.toggle("on", !!filterCo);
+    $("weekSel").value = weeks;
+
+    // Nada se pierde al acortar el ciclo: se avisa que quedo guardado.
+    var g = guardadas();
+    if (g.length){
+      var sem = {};
+      g.forEach(function(p){ sem[p.week] = 1; });
+      var claves = Object.keys(sem).sort(function(a,b){ return a-b; });
+      aviso(g.length + (g.length === 1 ? " publicacion quedo guardada" : " publicaciones quedaron guardadas") +
+            (claves.length === 1 ? " en la semana " : " en las semanas ") + claves.join(", ") +
+            ", fuera del ciclo de " + weeks + (weeks === 1 ? " semana" : " semanas") +
+            ". No se borro nada: vuelve" + (g.length === 1 ? "" : "n") + " a aparecer si amplias el ciclo.");
+    } else {
+      aviso("");
+    }
+  }
+
+  function renderGrid(){
+    $("dow").innerHTML = '<div class="label">Semana</div>' +
+      DOW.map(function(d){ return '<div class="label">' + d + "</div>"; }).join("");
+
+    var hoyStr = ymd(hoy());
+    var html = "";
+
+    for (var w = 1; w <= weeks; w++){
+      var ini = fechaDe(w, 0), fin = fechaDe(w, 6);
+      var actual = ymd(lunesDe(hoy())) === ymd(ini);
+      html += '<div class="wk' + (actual ? " actual" : "") + '"><b>Semana ' + w + "</b><span>" +
+              corta(ini) + " - " + corta(fin) + "</span></div>";
+
+      for (var dw = 0; dw <= 6; dw++){
+        var f = fechaDe(w, dw);
+        var fs = ymd(f);
+        var items = forSlot(w, dw);
+        html += '<div class="day' + (dw >= 5 ? " weekend" : "") +
+                (fs === hoyStr ? " today" : "") + (fs < hoyStr ? " pasado" : "") +
+                '" role="button" tabindex="0" data-w="' + w + '" data-d="' + dw + '">';
+        html += '<span class="daynum">' + corta(f) + "</span>";
+        html += '<span class="add" data-add="' + w + "," + dw + '"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>';
+
+        items.slice(0, MAX_CHIPS).forEach(function(p){
+          var mark = filterCo
+            ? (sentOf(p.id)[filterCo] ? "enviado" : "pendiente")
+            : sentCount(p) + "/" + TOTAL_CO;
+          html += '<span class="chip' + (isDone(p) ? " done" : "") + '" draggable="true" data-post="' + p.id +
+                  '" style="--chipc:' + TYPES[p.type].color +
+                  (p.familia ? ";--famc:" + FAMILIAS[p.familia].color : "") + '">' +
+                  '<span class="meta">' +
+                    (p.time ? '<span class="t">' + esc(p.time) + "</span>" : "") +
+                    (p.img ? '<span class="pic">' + ICON_PIC + "</span>" : "") +
+                    '<span class="cnt">' + mark + "</span>" +
+                  "</span>" +
+                  '<span class="n">' + esc(p.title || TYPES[p.type].label) + "</span></span>";
+        });
+        if (items.length > MAX_CHIPS){
+          html += '<span class="more">+' + (items.length - MAX_CHIPS) + " mas</span>";
+        }
+        if (!items.length && dbReady){
+          html += '<span class="gap">Sin contenido</span>';
+        }
+        html += "</div>";
+      }
+    }
+    $("weeks").innerHTML = html;
+  }
+
+  /* ---------- panel del dia ---------- */
+  function renderDrawer(){
+    var open = !!selected;
+    $("drawer").classList.toggle("open", open);
+    $("drawer").setAttribute("aria-hidden", open ? "false" : "true");
+    $("scrim").classList.toggle("open", open);
+    if (!open) return;
+
+    var w = selected.w, dw = selected.d;
+    var items = forSlot(w, dw);
+    var done = items.filter(isDone).length;
+    var f = fechaDe(w, dw);
+
+    $("dLabel").textContent = "Semana " + w + " / " + DOW[dw];
+    $("dTitle").textContent = larga(f);
+    $("dSub").textContent = items.length
+      ? items.length + (items.length === 1 ? " publicacion" : " publicaciones") + ", " + done +
+        (filterCo ? " enviada" + (done === 1 ? "" : "s") + " a " + coName(filterCo) : " completa" + (done === 1 ? "" : "s")) +
+        " en esta vuelta"
+      : "Casilla vacia: este dia del ciclo no tiene contenido";
+
+    var body = $("dBody");
+    body.innerHTML = "";
+    items.forEach(function(p, i){ body.appendChild(postCard(p, i, items.length)); });
+
+    if (editing){
+      body.appendChild(editorCard());
+      var t = $("fTitle"); if (t) t.focus();
+    } else if (dbReady){
+      var b = document.createElement("button");
+      b.className = "btn btn-primary";
+      b.style.alignSelf = "flex-start";
+      b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Agregar publicacion';
+      b.onclick = function(){ startEditor(newDraft(w, dw)); };
+      body.appendChild(b);
+    } else if (!items.length){
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "Conectando con el calendario.";
+      body.appendChild(e);
+    }
+  }
+
+  var ICON_COPY = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8"/></svg>';
+  var ICON_CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L19 6"/></svg>';
+  var ICON_LINK = '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.5.5l2-2A5 5 0 0012.5 4.5L11 6"/><path d="M14 11a5 5 0 00-7.5-.5l-2 2A5 5 0 0011.5 19.5L13 18"/></svg>';
+  var ICON_TRASH = '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
+
+  /* ---------- confirmacion ---------- */
+  var pendiente = null;   // que hacer si el usuario dice que si
+
+  function pedirConfirmacion(titulo, texto, alAceptar){
+    pendiente = alAceptar;
+    $("cTitle").textContent = titulo;
+    $("cTexto").innerHTML = texto;
+    $("cwrap").classList.add("open");
+    $("cNo").focus();
+  }
+  function cerrarConfirmacion(){
+    pendiente = null;
+    $("cwrap").classList.remove("open");
+  }
+  $("cNo").onclick = cerrarConfirmacion;
+  $("cSi").onclick = function(){
+    var fn = pendiente;
+    cerrarConfirmacion();
+    if (fn) fn();
+  };
+  $("cwrap").addEventListener("mousedown", function(ev){
+    if (ev.target === this) cerrarConfirmacion();
+  });
+
+  function botonBorrar(titulo, texto, alBorrar){
+    var b = document.createElement("button");
+    b.className = "iconbtn trash";
+    b.innerHTML = ICON_TRASH;
+    b.title = "Eliminar";
+    b.setAttribute("aria-label", "Eliminar");
+    b.disabled = !dbReady;
+    b.onclick = function(ev){
+      ev.stopPropagation();
+      pedirConfirmacion(titulo, texto, alBorrar);
+    };
+    return b;
+  }
+
+  function postCard(p, indice, total){
+    var s = sentOf(p.id);
+    var n = sentCount(p);
+    var el = document.createElement("article");
+    el.className = "post" + (isDone(p) ? " done" : "");
+    el.style.setProperty("--chipc", TYPES[p.type].color);
+
+    if (p.familia) el.style.setProperty("--famc", FAMILIAS[p.familia].color);
+
+    var head = document.createElement("div");
+    head.className = "post-top";
+    head.innerHTML = '<span class="ord">' + pad(indice + 1) + "/" + pad(total) + "</span>" +
+                     '<span class="tag">' + esc(TYPES[p.type].label) + "</span>" +
+                     (p.familia ? '<span class="ftag">' + esc(FAMILIAS[p.familia].label) + "</span>" : "") +
+                     '<span class="t">' + (p.time ? esc(p.time) : "sin hora") + "</span>" +
+                     '<span class="prog' + (n === TOTAL_CO ? " full" : "") + '">' + n + "/" + TOTAL_CO + " enviadas</span>";
+    el.appendChild(head);
+
+    if (p.title){
+      var h = document.createElement("h3");
+      h.textContent = p.title;
+      el.appendChild(h);
+    }
+
+    var box = document.createElement("div");
+    box.className = "copybox";
+    if (p.copy){
+      box.textContent = p.copy;
+    } else {
+      box.textContent = "Sin copy escrito todavia.";
+      box.style.color = "var(--muted)";
+      box.style.fontStyle = "italic";
+    }
+    el.appendChild(box);
+
+    if (p.img){
+      var th = document.createElement("div");
+      th.className = "thumb";
+      var thi = document.createElement("img");
+      thi.src = p.img;
+      thi.alt = "";
+      th.appendChild(thi);
+      el.appendChild(th);
+    }
+
+    if (p.link){
+      var a = document.createElement("a");
+      a.className = "tmpl";
+      a.href = p.link;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML = ICON_LINK + "<span>Abrir template</span>";
+      el.appendChild(a);
+    }
+
+    var acts = document.createElement("div");
+    acts.className = "post-acts";
+
+    var copyBtn = document.createElement("button");
+    copyBtn.className = "btn btn-primary";
+    copyBtn.innerHTML = ICON_COPY + "Copiar copy";
+    copyBtn.disabled = !p.copy;
+    copyBtn.onclick = function(){
+      var ok = function(){
+        copyBtn.innerHTML = ICON_CHECK + "Copiado";
+        setTimeout(function(){ copyBtn.innerHTML = ICON_COPY + "Copiar copy"; }, 2000);
+      };
+      var fail = function(){ toast("El navegador bloqueo el portapapeles. Selecciona el texto y copialo a mano."); };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(p.copy).then(ok, fail);
+      } else { fail(); }
+    };
+    acts.appendChild(copyBtn);
+
+    if (p.img){
+      var ci = document.createElement("button");
+      ci.className = "btn";
+      ci.innerHTML = ICON_PIC + "<span>Copiar imagen</span>";
+      ci.title = "Copiarla para pegarla directo en WhatsApp";
+      ci.onclick = function(){ copiarImagen(p.img, ci); };
+      acts.appendChild(ci);
+    }
+
+    var sp = document.createElement("span");
+    sp.className = "sp";
+    acts.appendChild(sp);
+
+    var edit = document.createElement("button");
+    edit.className = "btn btn-quiet";
+    edit.textContent = "Editar";
+    edit.title = "Cambia esta publicacion en todas las vueltas del ciclo";
+    edit.disabled = !dbReady;
+    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, img:p.img, title:p.title, copy:p.copy, link:p.link}); };
+    acts.appendChild(edit);
+
+    acts.appendChild(botonBorrar(
+      "Eliminar publicacion",
+      "<b>" + esc(p.title || TYPES[p.type].label) + "</b> se elimina del ciclo completo, en todas sus vueltas. Esto no se puede deshacer.",
+      function(){ removePost(p); }
+    ));
+    el.appendChild(acts);
+
+    /* --- casillas de envio de ESTA vuelta --- */
+    var sh = document.createElement("div");
+    sh.className = "sendhead";
+    sh.innerHTML = '<span class="label">Enviado en esta vuelta</span><span class="sp"></span>';
+    var all = document.createElement("button");
+    all.className = "btn btn-quiet";
+    all.textContent = n === TOTAL_CO ? "Quitar todas" : "Marcar todas";
+    all.disabled = !dbReady;
+    all.onclick = function(){ markAll(p, n !== TOTAL_CO); };
+    sh.appendChild(all);
+    el.appendChild(sh);
+
+    var grid = document.createElement("div");
+    grid.className = "sendgrid";
+    COMPANIES.forEach(function(c){
+      var on = !!s[c.id];
+      var b = document.createElement("button");
+      b.className = "co-tog" + (on ? " on" : "") + (filterCo === c.id ? " spot" : "");
+      b.disabled = !dbReady;
+      b.title = on ? "Enviado " + stamp(s[c.id]) : "Marcar como enviado a " + c.name;
+      b.innerHTML = '<span class="box">' + ICON_CHECK + '</span><span class="nm">' + esc(c.name) + "</span>";
+      b.onclick = function(){ toggleSent(p, c.id, on); };
+      grid.appendChild(b);
+    });
+    el.appendChild(grid);
+
+    return el;
+  }
+
+  function stamp(iso){
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return "el " + d.getDate() + " " + MES_CORTO[d.getMonth()] + " a las " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
+  /* ============================================================
+     IMAGENES
+     El artifact bloquea imagenes externas, asi que no sirve pegar
+     una URL: la imagen viaja dentro del documento como data URI.
+     Un documento admite 256 KiB, asi que se comprime en el navegador
+     antes de guardar. Para mandarla por WhatsApp se copia al
+     portapapeles y se pega en el chat.
+     ============================================================ */
+  var LIMITE_IMG = 168000;   // caracteres del data URI, con margen bajo los 256 KiB
+
+  function pesoKB(uri){ return Math.round(uri.length * 0.75 / 1024); }
+
+  function comprimirImagen(file){
+    return new Promise(function(resolve, reject){
+      if (!file || !/^image\//.test(file.type)) return reject("tipo");
+      var fr = new FileReader();
+      fr.onerror = function(){ reject("lectura"); };
+      fr.onload = function(){
+        var im = new Image();
+        im.onerror = function(){ reject("lectura"); };
+        im.onload = function(){
+          var c = document.createElement("canvas"), ctx;
+          var esc = Math.min(1, 1100 / Math.max(im.width, im.height));
+          var an = Math.max(1, Math.round(im.width * esc));
+          var al = Math.max(1, Math.round(im.height * esc));
+
+          function pintar(w, h, q){
+            c.width = w; c.height = h;
+            ctx = c.getContext("2d");
+            ctx.fillStyle = "#ffffff";        // los PNG con transparencia quedarian negros en JPEG
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(im, 0, 0, w, h);
+            return c.toDataURL("image/jpeg", q);
+          }
+
+          var q = 0.78;
+          var out = pintar(an, al, q);
+          while (out.length > LIMITE_IMG && q > 0.4){ q -= 0.1; out = pintar(an, al, q); }
+          while (out.length > LIMITE_IMG && an > 420){
+            an = Math.round(an * 0.8); al = Math.round(al * 0.8);
+            out = pintar(an, al, 0.7);
+          }
+          if (out.length > LIMITE_IMG) return reject("peso");
+          resolve(out);
+        };
+        im.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  var ICON_PIC = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-6 6"/></svg>';
+
+  // Copiar la imagen al portapapeles para pegarla directo en WhatsApp.
+  // El portapapeles solo acepta PNG, asi que se reconvierte al vuelo.
+  function copiarImagen(uri, btn){
+    if (!navigator.clipboard || !window.ClipboardItem || !window.isSecureContext){
+      toast("Este navegador no permite copiar imagenes. Abre la imagen y guardala con clic derecho.");
+      return;
+    }
+    // El ClipboardItem debe construirse dentro del clic, por eso se le
+    // pasa la promesa y no el blob ya resuelto.
+    var png = new Promise(function(resolve, reject){
+      var im = new Image();
+      im.onload = function(){
+        var c = document.createElement("canvas");
+        c.width = im.width; c.height = im.height;
+        c.getContext("2d").drawImage(im, 0, 0);
+        c.toBlob(function(b){ b ? resolve(b) : reject(new Error("blob")); }, "image/png");
+      };
+      im.onerror = function(){ reject(new Error("img")); };
+      im.src = uri;
+    });
+    var original = btn ? btn.innerHTML : null;
+    navigator.clipboard.write([new ClipboardItem({"image/png": png})]).then(function(){
+      if (!btn) return;
+      btn.innerHTML = ICON_CHECK + "<span>Imagen copiada</span>";
+      setTimeout(function(){ btn.innerHTML = original; }, 2000);
+    }, function(){
+      toast("El navegador bloqueo el portapapeles. Guarda la imagen con clic derecho sobre ella.");
+    });
+  }
+
+  /* Pegar una imagen dentro del editor con Ctrl+V.
+     Los campos se registran aqui; el listener usa el ultimo que siga
+     vivo en el documento, asi no hay que desmontar nada al re-renderizar. */
+  var camposImg = [];
+  document.addEventListener("paste", function(ev){
+    camposImg = camposImg.filter(function(c){ return document.contains(c.nodo); });
+    if (!camposImg.length) return;
+    var campo = camposImg[camposImg.length - 1];
+    var items = (ev.clipboardData && ev.clipboardData.items) || [];
+    for (var i = 0; i < items.length; i++){
+      if (items[i].type && items[i].type.indexOf("image/") === 0){
+        var f = items[i].getAsFile();
+        if (!f) continue;
+        ev.preventDefault();
+        campo.cargar(f);
+        return;
+      }
+    }
+  });
+
+  // Campo de imagen compartido por los dos editores. `estado` guarda el
+  // data URI vigente; el llamador lo lee al guardar.
+  function campoImagen(estado, clave){
+    var wrap = document.createElement("div");
+    wrap.className = "field imgfield";
+    wrap.innerHTML = '<span class="label">Imagen (opcional)</span>';
+
+    var prev = document.createElement("div");
+    prev.className = "imgprev";
+    var acts = document.createElement("div");
+    acts.className = "imgacts";
+
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    var elegir = document.createElement("button");
+    elegir.type = "button";
+    elegir.className = "btn";
+    elegir.innerHTML = ICON_PIC + "<span>Elegir imagen</span>";
+    elegir.onclick = function(){ input.click(); };
+
+    var quitar = document.createElement("button");
+    quitar.type = "button";
+    quitar.className = "btn btn-quiet";
+    quitar.textContent = "Quitar";
+    quitar.onclick = function(){ estado[clave] = ""; pintar(); };
+
+    var peso = document.createElement("span");
+    peso.className = "peso";
+
+    function pintar(){
+      var uri = estado[clave];
+      if (uri){
+        prev.innerHTML = "";
+        var im = document.createElement("img");
+        im.src = uri;
+        im.alt = "";
+        prev.appendChild(im);
+        elegir.querySelector("span").textContent = "Cambiar imagen";
+        quitar.hidden = false;
+        peso.textContent = pesoKB(uri) + " KB";
+      } else {
+        prev.innerHTML = '<span class="vacia">Sin imagen. Pega con Ctrl+V, arrastra el archivo aqui o elige uno.</span>';
+        elegir.querySelector("span").textContent = "Elegir imagen";
+        quitar.hidden = true;
+        peso.textContent = "";
+      }
+    }
+
+    function cargar(f){
+      if (!f) return;
+      peso.textContent = "comprimiendo...";
+      comprimirImagen(f).then(function(uri){
+        estado[clave] = uri;
+        pintar();
+      }, function(motivo){
+        peso.textContent = "";
+        toast(motivo === "peso"
+          ? "La imagen pesa demasiado incluso comprimida. Prueba con una mas pequena."
+          : motivo === "tipo" ? "Ese archivo no es una imagen."
+          : "No se pudo leer la imagen.");
+      });
+    }
+
+    input.onchange = function(){
+      var f = input.files && input.files[0];
+      input.value = "";
+      cargar(f);
+    };
+
+    // Arrastrar un archivo sobre la vista previa tambien vale.
+    prev.addEventListener("dragover", function(ev){
+      ev.preventDefault();
+      prev.style.borderColor = "var(--accent)";
+    });
+    prev.addEventListener("dragleave", function(){ prev.style.borderColor = ""; });
+    prev.addEventListener("drop", function(ev){
+      ev.preventDefault();
+      prev.style.borderColor = "";
+      var f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+      cargar(f);
+    });
+
+    camposImg.push({nodo: wrap, cargar: cargar});
+
+    acts.appendChild(elegir);
+    acts.appendChild(quitar);
+    acts.appendChild(peso);
+    wrap.appendChild(prev);
+    wrap.appendChild(acts);
+    wrap.appendChild(input);
+    pintar();
+    return wrap;
+  }
+
+  /* ---------- editor ---------- */
+  function newDraft(w, dw){
+    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", img:"", title:"", copy:"", link:""};
+  }
+  function startEditor(draft){
+    editing = draft;
+    selected = {w:draft.week, d:draft.dow};
+    renderDrawer();
+  }
+
+  function editorCard(){
+    var el = document.createElement("form");
+    el.className = "editor";
+    // Si la publicacion vive en una semana guardada, su opcion sigue
+    // disponible para poder traerla de vuelta.
+    var maxSem = Math.max(weeks, editing.week || 1);
+    var semanas = "";
+    for (var i = 1; i <= maxSem; i++){
+      semanas += '<option value="' + i + '"' + (editing.week === i ? " selected" : "") +
+                 ">Semana " + i + (i > weeks ? " (guardada)" : "") + "</option>";
+    }
+    el.innerHTML =
+      '<span class="label">' + (editing.id ? "Editar publicacion" : "Nueva publicacion") + "</span>" +
+      '<div class="row">' +
+        '<div class="field"><span class="label">Semana del ciclo</span><select id="fWeek">' + semanas + "</select></div>" +
+        '<div class="field"><span class="label">Dia</span><select id="fDow">' +
+          DOW.map(function(d,i){ return '<option value="' + i + '"' + (editing.dow === i ? " selected" : "") + ">" + d + "</option>"; }).join("") +
+        "</select></div>" +
+        '<div class="field" style="flex:0 1 116px"><span class="label">Hora</span><input id="fTime" type="time" value="' + esc(editing.time) + '"></div>' +
+      "</div>" +
+      '<div class="row">' +
+        '<div class="field"><span class="label">Tipo</span><select id="fType">' +
+          TYPE_KEYS.map(function(k){ return '<option value="' + k + '"' + (editing.type === k ? " selected" : "") + ">" + TYPES[k].label + "</option>"; }).join("") +
+        "</select></div>" +
+        '<div class="field"><span class="label">Categoria</span><select id="fFam">' +
+          '<option value=""' + (editing.familia ? "" : " selected") + ">Sin categoria</option>" +
+          FAM_KEYS.map(function(k){ return '<option value="' + k + '"' + (editing.familia === k ? " selected" : "") + ">" + FAMILIAS[k].label + "</option>"; }).join("") +
+        "</select></div>" +
+      "</div>" +
+      '<div class="field"><span class="label">Titulo</span><input id="fTitle" maxlength="70" placeholder="Reto de la semana" value="' + esc(editing.title) + '"></div>' +
+      '<div class="field"><span class="label">Copy para WhatsApp</span><textarea id="fCopy" placeholder="El mensaje exacto que se pega en el grupo.">' + esc(editing.copy) + "</textarea>" +
+        '<span class="hint">Se repite en esa casilla cada vuelta del ciclo, igual para las ' + TOTAL_CO + " companias.</span></div>" +
+      '<div class="field"><span class="label">Template en Drive (opcional)</span><input id="fLink" placeholder="https://drive.google.com/..." value="' + esc(editing.link) + '"></div>' +
+      '<div class="editor-acts"><button class="btn btn-primary" type="submit">Guardar</button>' +
+      '<button class="btn btn-quiet" type="button" id="fCancel">Cancelar</button></div>';
+
+    // La imagen se inserta antes de la fila de botones.
+    el.insertBefore(campoImagen(editing, "img"), el.querySelector(".editor-acts"));
+
+    el.onsubmit = function(ev){ ev.preventDefault(); savePost(); };
+    el.querySelector("#fCancel").onclick = function(){ editing = null; renderDrawer(); };
+    return el;
+  }
+
+  function savePost(){
+    if (!db){ toast("Sin conexion al almacenamiento del calendario."); return; }
+    var body = {
+      week: parseInt($("fWeek").value, 10),
+      dow: parseInt($("fDow").value, 10),
+      time: $("fTime").value || "",
+      type: $("fType").value,
+      familia: $("fFam").value,
+      img: editing.img || "",
+      title: $("fTitle").value.trim(),
+      copy: $("fCopy").value,
+      link: $("fLink").value.trim()
+    };
+    if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
+
+    var id = editing.id;
+    var ref = id ? db.collection("plantilla").doc(id) : db.collection("plantilla").doc();
+    editing = null;
+    selected = {w:body.week, d:body.dow};
+    renderDrawer();
+    write(function(){ return ref.set(body); }).then(function(){
+      toast(id ? "Cambios guardados en el ciclo."
+               : "Agregada a la semana " + body.week + ", " + DOW[body.dow] + ".");
+    }, function(){});
+  }
+
+  function removePost(p){
+    write(function(){ return db.collection("plantilla").doc(p.id).delete(); })
+      .then(function(){ toast("Eliminada del ciclo."); }, function(){});
+  }
+
+  /* ---------- marcar envios (por vuelta) ---------- */
+  // update() fusiona en profundidad, asi que dos personas pueden marcar
+  // publicaciones distintas sin pisarse. Si la vuelta aun no tiene
+  // documento, update lo rechaza y se crea con set.
+  function writeMarks(patch){
+    var ref = db.doc("envios/" + claveCiclo());
+    return write(function(){
+      return ref.update({marks: patch}).catch(function(e){
+        if (e && e.code === "invalid_argument") return ref.set({marks: patch});
+        throw e;
+      });
+    });
+  }
+  function toggleSent(p, cid, on){
+    var inner = {};
+    inner[cid] = on ? "" : new Date().toISOString();
+    var patch = {};
+    patch[p.id] = inner;
+    writeMarks(patch).then(null, function(){});
+  }
+  function markAll(p, on){
+    var s = sentOf(p.id);
+    var now = new Date().toISOString();
+    var inner = {};
+    COMPANIES.forEach(function(c){ inner[c.id] = on ? (s[c.id] || now) : ""; });
+    var patch = {};
+    patch[p.id] = inner;
+    writeMarks(patch).then(function(){
+      toast(on ? "Marcada para las " + TOTAL_CO + " companias." : "Envios desmarcados.");
+    }, function(){});
+  }
+
+  /* ============================================================
+     LIBRERIA
+     Retos y anuncios reutilizables que viven fuera del ciclo. Se
+     arrastran a una casilla para programarlos; lo que se suelta es
+     una COPIA, asi que editar el ciclo no toca la libreria ni al
+     reves. Coleccion "libreria": {type, title, copy, link}.
+     ============================================================ */
+  function libVisible(){
+    var q = libQ.trim().toLowerCase();
+    return lib.filter(function(it){
+      if (libFam && it.familia !== libFam) return false;
+      if (libType && it.type !== libType) return false;
+      if (!q) return true;
+      var fam = it.familia ? FAMILIAS[it.familia].label : "";
+      return (it.title + " " + it.copy + " " + fam).toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function renderLib(){
+    $("libCount").textContent = lib.length ? lib.length + " piezas" : "";
+
+    $("libFams").innerHTML = ['<button data-f="" class="' + (libFam ? "" : "on") + '">Todas</button>']
+      .concat(FAM_KEYS.map(function(k){
+        var n = lib.filter(function(it){ return it.familia === k; }).length;
+        if (!n) return "";
+        return '<button data-f="' + k + '" class="' + (libFam === k ? "on" : "") + '" style="--fc:' + FAMILIAS[k].color + '"><i></i>' + FAMILIAS[k].label + " " + n + "</button>";
+      })).join("");
+
+    renderLibModal();
+
+    var list = $("libList");
+    list.innerHTML = "";
+    var items = libVisible();
+
+    if (!items.length){
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = !dbReady ? "Cargando la libreria."
+        : lib.length ? "Nada coincide con el filtro."
+        : "La libreria esta vacia. Crea una pieza con Nuevo y arrastrala a un dia del ciclo.";
+      list.appendChild(e);
+      return;
+    }
+
+    items.forEach(function(it){
+      var el = document.createElement("article");
+      el.className = "libcard";
+      el.style.setProperty("--chipc", TYPES[it.type].color);
+      el.draggable = true;
+      el.title = "Arrastra a un dia del ciclo para programarla";
+
+      if (it.familia) el.style.setProperty("--fc", FAMILIAS[it.familia].color);
+      el.innerHTML = '<div class="ltop"><span class="lt">' +
+                       esc(it.familia ? FAMILIAS[it.familia].label : "Sin categoria") + "</span>" +
+                       (it.grupos ? '<span class="lveces">' + it.grupos + (it.grupos === 1 ? " grupo" : " grupos") + "</span>" : "") +
+                     "</div>" +
+                     "<h4>" + esc(it.title || "Sin titulo") + "</h4>" +
+                     (it.img ? '<span class="thumb"><img src="' + it.img + '" alt=""></span>' : "") +
+                     "<p>" + esc(it.copy) + "</p>";
+
+      el.addEventListener("dragstart", function(ev){
+        ev.dataTransfer.setData("text/plain", "lib:" + it.id);
+        ev.dataTransfer.effectAllowed = "copy";
+        el.classList.add("arrastrando");
+      });
+      el.addEventListener("dragend", function(){ el.classList.remove("arrastrando"); });
+
+      var acts = document.createElement("div");
+      acts.className = "lacts";
+
+      var ed = document.createElement("button");
+      ed.textContent = "Editar";
+      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, grupos:it.grupos, img:it.img, title:it.title, copy:it.copy, link:it.link}; renderLib(); };
+      acts.appendChild(ed);
+
+      acts.appendChild(botonBorrar(
+        "Eliminar de la libreria",
+        "<b>" + esc(it.title || "Sin titulo") + "</b> se quita de la libreria. Lo que ya hayas programado en el ciclo no se toca.",
+        function(){
+          write(function(){ return db.collection("libreria").doc(it.id).delete(); })
+            .then(function(){ toast("Pieza eliminada de la libreria."); }, function(){});
+        }
+      ));
+
+      el.appendChild(acts);
+      list.appendChild(el);
+    });
+  }
+
+  // El editor de la libreria vive en un modal centrado: el copy es largo
+  // y en la banda lateral no se alcanzaba a leer completo.
+  function cerrarLibModal(){ libEdit = null; renderLib(); }
+
+  function renderLibModal(){
+    var w = $("mwrap"), box = $("mbox");
+    if (!libEdit){
+      w.classList.remove("open");
+      box.innerHTML = "";
+      return;
+    }
+    box.innerHTML = "";
+
+    var head = document.createElement("div");
+    head.className = "mhead";
+    head.innerHTML = '<span class="label">' + (libEdit.id ? "Editar pieza de la libreria" : "Nueva pieza de la libreria") + "</span>";
+    var x = document.createElement("button");
+    x.className = "iconbtn";
+    x.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    x.setAttribute("aria-label", "Cerrar");
+    x.onclick = cerrarLibModal;
+    head.appendChild(x);
+    box.appendChild(head);
+    box.appendChild(libFormCard());
+
+    w.classList.add("open");
+    var t = $("lTitle");
+    if (t){ t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+  }
+
+  function libFormCard(){
+    var el = document.createElement("form");
+    el.className = "editor";
+    el.innerHTML =
+      '<div class="row">' +
+        '<div class="field"><span class="label">Categoria</span><select id="lFam">' +
+          '<option value=""' + (libEdit.familia ? "" : " selected") + ">Sin categoria</option>" +
+          FAM_KEYS.map(function(k){ return '<option value="' + k + '"' + (libEdit.familia === k ? " selected" : "") + ">" + FAMILIAS[k].label + "</option>"; }).join("") +
+        "</select></div>" +
+        '<div class="field"><span class="label">Tipo</span><select id="lType">' +
+          TYPE_KEYS.map(function(k){ return '<option value="' + k + '"' + (libEdit.type === k ? " selected" : "") + ">" + TYPES[k].label + "</option>"; }).join("") +
+        "</select></div>" +
+      "</div>" +
+      '<div class="field"><span class="label">Titulo</span><input id="lTitle" maxlength="70" value="' + esc(libEdit.title) + '"></div>' +
+      '<div class="field"><span class="label">Copy</span><textarea id="lCopy">' + esc(libEdit.copy) + "</textarea></div>" +
+      '<div class="editor-acts"><button class="btn btn-primary" type="submit">Guardar</button>' +
+      '<button class="btn btn-quiet" type="button" id="lCancel">Cancelar</button></div>';
+
+    el.onsubmit = function(ev){
+      ev.preventDefault();
+      // grupos y link no se editan aqui: se conservan tal como estaban.
+      var body = {
+        type: $("lType").value,
+        familia: $("lFam").value,
+        grupos: libEdit.grupos || 0,
+        img: libEdit.img || "",
+        title: $("lTitle").value.trim(),
+        copy: $("lCopy").value,
+        link: libEdit.link || ""
+      };
+      if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
+      var ref = libEdit.id ? db.collection("libreria").doc(libEdit.id) : db.collection("libreria").doc();
+      var era = libEdit.id;
+      libEdit = null;
+      renderLib();
+      write(function(){ return ref.set(body); })
+        .then(function(){ toast(era ? "Pieza actualizada." : "Pieza guardada en la libreria."); }, function(){});
+    };
+    el.insertBefore(campoImagen(libEdit, "img"), el.querySelector(".editor-acts"));
+
+    el.querySelector("#lCancel").onclick = cerrarLibModal;
+    return el;
+  }
+
+  // Suelta una pieza de la libreria en una casilla del ciclo.
+  function soltarLib(id, w, dw){
+    var it = null;
+    for (var i = 0; i < lib.length; i++){ if (lib[i].id === id){ it = lib[i]; break; } }
+    if (!it){ toast("Esa pieza ya no esta en la libreria."); return; }
+    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", img:it.img || "", title:it.title, copy:it.copy, link:it.link};
+    write(function(){ return db.collection("plantilla").doc().set(body); })
+      .then(function(){ toast('"' + (it.title || TYPES[it.type].label) + '" programada en semana ' + w + ", " + DOW[dw] + "."); }, function(){});
+  }
+  // Mueve una publicacion ya programada a otra casilla.
+  function moverPost(id, w, dw){
+    var p = null;
+    for (var i = 0; i < tpl.length; i++){ if (tpl[i].id === id){ p = tpl[i]; break; } }
+    if (!p) return;
+    if (p.week === w && p.dow === dw) return;
+    write(function(){ return db.collection("plantilla").doc(id).update({week:w, dow:dw}); })
+      .then(function(){ toast("Movida a semana " + w + ", " + DOW[dw] + "."); }, function(){});
+  }
+  $("libNew").onclick = function(){
+    if (!dbReady){ toast("Sin conexion al almacenamiento del calendario."); return; }
+    libEdit = {id:null, type:"reto", familia:"", grupos:0, img:"", title:"", copy:"", link:""};
+    renderLib();
+    var t = $("lTitle"); if (t) t.focus();
+  };
+  (function initWeekSel(){
+    var sel = $("weekSel"), html = "";
+    for (var i = WEEKS_MIN; i <= WEEKS_MAX; i++){
+      html += '<option value="' + i + '">' + i + (i === 1 ? " semana" : " semanas") + "</option>";
+    }
+    sel.innerHTML = html;
+    sel.value = weeks;
+    sel.onchange = function(){
+      if (!dbReady){ sel.value = weeks; toast("Sin conexion al almacenamiento del calendario."); return; }
+      setWeeks(parseInt(sel.value, 10));
+    };
+  })();
+
+  $("libSearch").oninput = function(){ libQ = this.value; renderLib(); };
+  $("libFams").addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-f]");
+    if (!b) return;
+    libFam = b.getAttribute("data-f");
+    renderLib();
+  });
+  (function initTipo(){
+    var sel = $("libTypeSel");
+    sel.innerHTML = '<option value="">Todo tipo</option>' +
+      TYPE_KEYS.map(function(k){ return '<option value="' + k + '">' + TYPES[k].label + "s</option>"; }).join("");
+    sel.onchange = function(){ libType = sel.value; renderLib(); };
+  })();
+  $("libToggle").onclick = function(){
+    var oculta = $("lib").classList.toggle("oculta");
+    try { localStorage.setItem("gali_cal_lib", oculta ? "0" : "1"); } catch(e){}
+  };
+  (function initLibVis(){
+    var v = "1";
+    try { v = localStorage.getItem("gali_cal_lib") || "1"; } catch(e){}
+    if (v === "0") $("lib").classList.add("oculta");
+  })();
+
+  // La barra superior cambia de alto al reajustarse; la libreria se
+  // pega justo debajo.
+  function syncTopbar(){
+    document.documentElement.style.setProperty("--tb", $("topbar").offsetHeight + "px");
+  }
+  window.addEventListener("resize", syncTopbar);
+  syncTopbar();
+
+  /* ---------- filtro por compania ---------- */
+  function setFilter(co){
+    filterCo = co || "";
+    $("fltCompany").value = filterCo;
+    try { localStorage.setItem("gali_cal_compania", filterCo); } catch(e){}
+    render();
+  }
+
+  (function initFilter(){
+    var sel = $("fltCompany");
+    sel.innerHTML = '<option value="">Todas las companias</option>' +
+      COMPANIES.map(function(c){ return '<option value="' + c.id + '">' + esc(c.name) + "</option>"; }).join("");
+    var saved = "";
+    try { saved = localStorage.getItem("gali_cal_compania") || ""; } catch(e){}
+    if (!coName(saved)) saved = "";
+    filterCo = saved;
+    sel.value = saved;
+    sel.onchange = function(){ setFilter(sel.value); };
+  })();
+
+  /* ---------- eventos ---------- */
+  function goCycle(delta){
+    cycle = suma(cycle, delta * slots());
+    editing = null; selected = null;
+    marks = {};
+    render();
+    if (db) subscribeMarks();
+  }
+  $("prev").onclick = function(){ goCycle(-1); };
+  $("next").onclick = function(){ goCycle(1); };
+  $("today").onclick = function(){
+    var c = cicloDe(hoy());
+    if (ymd(c) === ymd(cycle)){ render(); return; }
+    cycle = c;
+    editing = null; selected = null;
+    marks = {};
+    render();
+    if (db) subscribeMarks();
+  };
+
+  $("weeks").addEventListener("click", function(ev){
+    var add = ev.target.closest("[data-add]");
+    if (add){
+      ev.stopPropagation();
+      if (!dbReady){ toast("Sin conexion al almacenamiento del calendario."); return; }
+      var wd = add.getAttribute("data-add").split(",");
+      startEditor(newDraft(parseInt(wd[0],10), parseInt(wd[1],10)));
+      return;
+    }
+    var cell = ev.target.closest(".day");
+    if (!cell) return;
+    selected = {w: parseInt(cell.getAttribute("data-w"),10), d: parseInt(cell.getAttribute("data-d"),10)};
+    editing = null;
+    renderDrawer();
+  });
+
+  // Las casillas son botones por rol, no por etiqueta: el teclado las abre.
+  $("weeks").addEventListener("keydown", function(ev){
+    if (ev.key !== "Enter" && ev.key !== " ") return;
+    var cell = ev.target.closest(".day");
+    if (!cell) return;
+    ev.preventDefault();
+    selected = {w: parseInt(cell.getAttribute("data-w"),10), d: parseInt(cell.getAttribute("data-d"),10)};
+    editing = null;
+    renderDrawer();
+  });
+
+  /* ---------- arrastrar y soltar sobre la malla ---------- */
+  $("weeks").addEventListener("dragstart", function(ev){
+    var chip = ev.target.closest("[data-post]");
+    if (!chip) return;
+    ev.dataTransfer.setData("text/plain", "post:" + chip.getAttribute("data-post"));
+    ev.dataTransfer.effectAllowed = "move";
+    chip.classList.add("arrastrando");
+  });
+  $("weeks").addEventListener("dragend", function(ev){
+    var chip = ev.target.closest("[data-post]");
+    if (chip) chip.classList.remove("arrastrando");
+    var over = $("weeks").querySelector(".day.over");
+    if (over) over.classList.remove("over");
+  });
+  $("weeks").addEventListener("dragover", function(ev){
+    var cell = ev.target.closest(".day");
+    if (!cell || !dbReady) return;
+    ev.preventDefault();
+    var prev = $("weeks").querySelector(".day.over");
+    if (prev && prev !== cell) prev.classList.remove("over");
+    cell.classList.add("over");
+  });
+  $("weeks").addEventListener("dragleave", function(ev){
+    var cell = ev.target.closest(".day");
+    if (cell && !cell.contains(ev.relatedTarget)) cell.classList.remove("over");
+  });
+  $("weeks").addEventListener("drop", function(ev){
+    var cell = ev.target.closest(".day");
+    if (!cell) return;
+    ev.preventDefault();
+    cell.classList.remove("over");
+    if (!dbReady){ toast("Sin conexion al almacenamiento del calendario."); return; }
+    var raw = ev.dataTransfer.getData("text/plain") || "";
+    var w = parseInt(cell.getAttribute("data-w"), 10);
+    var dw = parseInt(cell.getAttribute("data-d"), 10);
+    if (raw.indexOf("lib:") === 0) soltarLib(raw.slice(4), w, dw);
+    else if (raw.indexOf("post:") === 0) moverPost(raw.slice(5), w, dw);
+  });
+
+  function closeDrawer(){ selected = null; editing = null; renderDrawer(); }
+  $("dClose").onclick = closeDrawer;
+  $("scrim").onclick = closeDrawer;
+  // Clic fuera del cuadro cierra el modal; dentro, no.
+  $("mwrap").addEventListener("mousedown", function(ev){
+    if (ev.target === this) cerrarLibModal();
+  });
+
+  document.addEventListener("keydown", function(ev){
+    if (ev.key !== "Escape") return;
+    if (pendiente){ cerrarConfirmacion(); return; }   // el dialogo va primero
+    if (libEdit){ cerrarLibModal(); return; }
+    if (!selected) return;
+    if (editing){ editing = null; renderDrawer(); } else { closeDrawer(); }
+  });
+
+  /* ---------- arranque ---------- */
+  cycle = cicloDe(hoy());
+  render();
+  notice("Conectando con el calendario.");
+
+  window.GALI.listo.then(function(store){
+    db = store;
+    subscribeCfg();
+    subscribeTpl();
+    subscribeMarks();
+    subscribeLib();
+  }, function(e){
+    notice((e && e.message) || "No se pudo abrir el calendario.", "err");
+  });
+})();
+</script>
+
+<script src="config.js"></script>
+<script type="module" src="firebase-init.js"></script>
+
+</body>
+</html>
