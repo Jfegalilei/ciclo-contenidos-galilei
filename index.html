@@ -105,6 +105,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .lib.oculta{display:none}
 .lib-head{display:flex;align-items:center;gap:8px}
 .lib-head .label{margin-right:auto}
+/* La accion principal de la banda: crear una pieza. Va sola, de ancho
+   completo, para que no compita con el buscador ni con los filtros. */
+.lib-new{width:100%;justify-content:center;padding:9px 13px}
 .lib-tools{display:flex;flex-direction:column;gap:7px}
 .lib-row{display:flex;gap:6px}
 .lib-tools input{flex:1;min-width:0;padding:6px 9px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);font-size:13px}
@@ -356,9 +359,8 @@ body.bloqueado{overflow:hidden}
   <aside class="lib" id="lib">
     <div class="lib-head">
       <span class="label">Libreria</span>
-      <span class="stat" id="libCount">&nbsp;</span>
-      <button class="btn btn-quiet" id="libNew">Nuevo</button>
     </div>
+    <button class="btn btn-primary lib-new" id="libNew"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva pieza</button>
     <div class="lib-tools">
       <div class="lib-row">
         <input id="libSearch" placeholder="Buscar en la libreria" autocomplete="off">
@@ -1437,8 +1439,6 @@ window.GALI.listo = new Promise(function(res, rej){
   }
 
   function renderLib(){
-    $("libCount").textContent = lib.length ? lib.length + " piezas" : "";
-
     $("libFams").innerHTML = ['<button data-f="" class="' + (libFam ? "" : "on") + '">Todas</button>']
       .concat(FAM_KEYS.map(function(k){
         var n = lib.filter(function(it){ return it.familia === k; }).length;
