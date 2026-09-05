@@ -267,7 +267,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .imgprev img{display:block;width:100%;height:auto;max-height:210px;object-fit:contain}
 .imgprev .vacia{font-size:12.5px;color:var(--muted);padding:16px 12px;text-align:center}
 .imgacts{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.imgacts input[type=file]{display:none}
+/* El input de archivo cuelga de .imgfield, no de .imgacts: quien abre el
+   selector es el boton "Elegir imagen". */
+.imgfield input[type=file]{display:none}
 .peso{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .editor{border:1px solid var(--accent);border-radius:9px;background:var(--surface);padding:13px;display:flex;flex-direction:column;gap:11px}
@@ -1345,7 +1347,6 @@ window.GALI.listo = new Promise(function(res, rej){
       '<div class="field"><span class="label">Titulo</span><input id="fTitle" maxlength="70" placeholder="Reto de la semana" value="' + esc(editing.title) + '"></div>' +
       '<div class="field"><span class="label">Copy para WhatsApp</span><textarea id="fCopy" placeholder="El mensaje exacto que se pega en el grupo.">' + esc(editing.copy) + "</textarea>" +
         '<span class="hint">Se repite en esa casilla cada vuelta del ciclo, igual para las ' + TOTAL_CO + " companias.</span></div>" +
-      '<div class="field"><span class="label">Template en Drive (opcional)</span><input id="fLink" placeholder="https://drive.google.com/..." value="' + esc(editing.link) + '"></div>' +
       '<div class="editor-acts"><button class="btn btn-primary" type="submit">Guardar</button>' +
       '<button class="btn btn-quiet" type="button" id="fCancel">Cancelar</button></div>';
 
@@ -1368,7 +1369,8 @@ window.GALI.listo = new Promise(function(res, rej){
       img: editing.img || "",
       title: $("fTitle").value.trim(),
       copy: $("fCopy").value,
-      link: $("fLink").value.trim()
+      // El enlace ya no se edita, pero el que exista se conserva.
+      link: editing.link || ""
     };
     if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
 
