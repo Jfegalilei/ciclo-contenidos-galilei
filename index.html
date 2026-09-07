@@ -203,9 +203,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .post-top .prog.full{color:var(--accent);font-weight:500}
 .post h3{margin:0;padding:11px 12px 0;font-family:var(--display);font-size:15px;font-weight:600;line-height:1.35;text-wrap:balance}
 .copybox{margin:9px 12px 0;padding:10px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);font-size:13.5px;white-space:pre-wrap;word-break:break-word;max-height:212px;overflow-y:auto}
-.tmpl{display:inline-flex;align-items:center;gap:6px;margin:9px 12px 0;font-size:12.5px;color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;align-self:flex-start}
-.tmpl:hover{border-bottom-color:var(--accent)}
-.tmpl svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .post-acts{display:flex;align-items:center;gap:6px;padding:11px 12px;flex-wrap:wrap}
 .post-acts .sp{margin-left:auto}
 .post.done h3{opacity:.6}
@@ -442,7 +439,7 @@ window.GALI.listo = new Promise(function(res, rej){
      La programacion es un CICLO FIJO de 4 semanas (28 dias) que
      corre sin parar. No tiene nada que ver con los meses: un ciclo
      puede empezar en un mes y terminar en otro.
-       coleccion "plantilla": {week: 1-4, dow: 0-6, time, type, title, copy, link, fija}
+       coleccion "plantilla": {week: 1-4, dow: 0-6, time, type, title, copy, fija}
        week 1-4 = semana dentro del ciclo; dow 0 = lunes, 6 = domingo.
      Son 28 casillas fijas, siempre existen todas: cualquier dia del
      ano cae exactamente en una.
@@ -738,7 +735,6 @@ window.GALI.listo = new Promise(function(res, rej){
           type: TYPES[b.type] ? b.type : "anuncio",
           title: b.title || "",
           copy: b.copy || "",
-          link: b.link || "",
           fija: normFija(b.fija)
         };
       });
@@ -793,8 +789,7 @@ window.GALI.listo = new Promise(function(res, rej){
           grupos: parseInt(b.grupos, 10) || 0,
           img: b.img || "",
           title: b.title || "",
-          copy: b.copy || "",
-          link: b.link || ""
+          copy: b.copy || ""
         };
       });
       renderLib();
@@ -979,7 +974,6 @@ window.GALI.listo = new Promise(function(res, rej){
 
   var ICON_COPY = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8"/></svg>';
   var ICON_CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L19 6"/></svg>';
-  var ICON_LINK = '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.5.5l2-2A5 5 0 0012.5 4.5L11 6"/><path d="M14 11a5 5 0 00-7.5-.5l-2 2A5 5 0 0011.5 19.5L13 18"/></svg>';
   var ICON_TRASH = '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
   var ICON_LOCK = '<svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>';
 
@@ -1067,15 +1061,6 @@ window.GALI.listo = new Promise(function(res, rej){
       el.appendChild(th);
     }
 
-    if (p.link){
-      var a = document.createElement("a");
-      a.className = "tmpl";
-      a.href = p.link;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.innerHTML = ICON_LINK + "<span>Abrir template</span>";
-      el.appendChild(a);
-    }
 
     var acts = document.createElement("div");
     acts.className = "post-acts";
@@ -1121,7 +1106,7 @@ window.GALI.listo = new Promise(function(res, rej){
     edit.textContent = "Editar";
     edit.title = "Cambia esta publicacion en todas las vueltas del ciclo";
     edit.disabled = !dbReady;
-    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, img:p.img, title:p.title, copy:p.copy, link:p.link, fija:p.fija || null}); };
+    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, img:p.img, title:p.title, copy:p.copy, fija:p.fija || null}); };
     acts.appendChild(edit);
 
     acts.appendChild(botonBorrar(
@@ -1394,7 +1379,7 @@ window.GALI.listo = new Promise(function(res, rej){
 
   /* ---------- editor ---------- */
   function newDraft(w, dw){
-    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", img:"", title:"", copy:"", link:"", fija:null};
+    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", img:"", title:"", copy:"", fija:null};
   }
   function startEditor(draft){
     editing = draft;
@@ -1437,7 +1422,6 @@ window.GALI.listo = new Promise(function(res, rej){
       '<div class="field"><span class="label">Titulo</span><input id="fTitle" maxlength="70" placeholder="Reto de la semana" value="' + esc(editing.title) + '"></div>' +
       '<div class="field"><span class="label">Copy para WhatsApp</span><textarea id="fCopy" placeholder="El mensaje exacto que se pega en el grupo.">' + esc(editing.copy) + "</textarea>" +
         '<span class="hint">Se repite cada vuelta del ciclo, igual para las ' + TOTAL_CO + " companias.</span></div>" +
-      '<div class="field"><span class="label">Template en Drive (opcional)</span><input id="fLink" placeholder="https://drive.google.com/..." value="' + esc(editing.link) + '"></div>' +
       '<div class="editor-acts"><button class="btn btn-primary" type="submit">Guardar</button>' +
       '<button class="btn btn-quiet" type="button" id="fCancel">Cancelar</button></div>';
 
@@ -1551,7 +1535,6 @@ window.GALI.listo = new Promise(function(res, rej){
       img: editing.img || "",
       title: $("fTitle").value.trim(),
       copy: $("fCopy").value,
-      link: $("fLink").value.trim(),
       fija: leerFijar()
     };
     if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
@@ -1618,7 +1601,7 @@ window.GALI.listo = new Promise(function(res, rej){
      Retos y anuncios reutilizables que viven fuera del ciclo. Se
      arrastran a una casilla para programarlos; lo que se suelta es
      una COPIA, asi que editar el ciclo no toca la libreria ni al
-     reves. Coleccion "libreria": {type, title, copy, link}.
+     reves. Coleccion "libreria": {type, title, copy}.
      ============================================================ */
   function libVisible(){
     var q = libQ.trim().toLowerCase();
@@ -1685,7 +1668,7 @@ window.GALI.listo = new Promise(function(res, rej){
 
       var ed = document.createElement("button");
       ed.textContent = "Editar";
-      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, grupos:it.grupos, img:it.img, title:it.title, copy:it.copy, link:it.link}; renderLib(); };
+      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, grupos:it.grupos, img:it.img, title:it.title, copy:it.copy}; renderLib(); };
       acts.appendChild(ed);
 
       acts.appendChild(botonBorrar(
@@ -1752,15 +1735,14 @@ window.GALI.listo = new Promise(function(res, rej){
 
     el.onsubmit = function(ev){
       ev.preventDefault();
-      // grupos y link no se editan aqui: se conservan tal como estaban.
+      // grupos no se edita aqui: se conserva tal como estaba.
       var body = {
         type: $("lType").value,
         familia: $("lFam").value,
         grupos: libEdit.grupos || 0,
         img: libEdit.img || "",
         title: $("lTitle").value.trim(),
-        copy: $("lCopy").value,
-        link: libEdit.link || ""
+        copy: $("lCopy").value
       };
       if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
       var ref = libEdit.id ? db.collection("libreria").doc(libEdit.id) : db.collection("libreria").doc();
@@ -1781,7 +1763,7 @@ window.GALI.listo = new Promise(function(res, rej){
     var it = null;
     for (var i = 0; i < lib.length; i++){ if (lib[i].id === id){ it = lib[i]; break; } }
     if (!it){ toast("Esa pieza ya no esta en la libreria."); return; }
-    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", img:it.img || "", title:it.title, copy:it.copy, link:it.link, fija:null};
+    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", img:it.img || "", title:it.title, copy:it.copy, fija:null};
     write(function(){ return db.collection("plantilla").doc().set(body); })
       .then(function(){ toast('"' + (it.title || TYPES[it.type].label) + '" programada en semana ' + w + ", " + DOW[dw] + "."); }, function(){});
   }
@@ -1800,7 +1782,7 @@ window.GALI.listo = new Promise(function(res, rej){
   }
   $("libNew").onclick = function(){
     if (!dbReady){ toast("Sin conexion al almacenamiento del calendario."); return; }
-    libEdit = {id:null, type:"reto", familia:"", grupos:0, img:"", title:"", copy:"", link:""};
+    libEdit = {id:null, type:"reto", familia:"", grupos:0, img:"", title:"", copy:""};
     renderLib();
     var t = $("lTitle"); if (t) t.focus();
   };
