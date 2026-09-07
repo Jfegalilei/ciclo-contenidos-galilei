@@ -5,19 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ciclo de Contenidos Galilei</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap">
+</head>
+<body>
 <style>
-/* Reset minimo: lo traia el envoltorio del artifact y aqui hace falta. */
-html{color-scheme:light dark}
-body{margin:0;padding:0}
-img{max-width:100%}
-[hidden]{display:none !important}
-
 :root{
   --paper:#eef1ee; --surface:#ffffff; --surface-2:#f7f9f7;
   --ink:#14191a; --ink-2:#4b5551; --muted:#78827d;
   --line:#d7ddd7; --line-strong:#bcc5bd;
   --accent:#0d5f4f; --accent-ink:#ffffff; --accent-soft:#dcebe5;
-  --t-reto:#9a4a12; --t-anuncio:#1c5580; --t-recordatorio:#5f4b8b;
+  --t-reto:#c2410c; --t-anuncio:#1c5580; --t-recordatorio:#5f4b8b;
   --f-participacion:#0891b2; --f-juego:#16a34a; --f-creativo:#c026d3;
   --f-negocio:#ca8a04; --f-personal:#e11d48; --f-temporada:#4338ca;
   --danger:#a3301f;
@@ -32,7 +28,7 @@ img{max-width:100%}
     --ink:#e7ece8; --ink-2:#aab5af; --muted:#7f8a84;
     --line:#28312d; --line-strong:#3b4640;
     --accent:#4bb99c; --accent-ink:#08120f; --accent-soft:#17332c;
-    --t-reto:#d98a4e; --t-anuncio:#6aa8dd; --t-recordatorio:#a794d8;
+    --t-reto:#f79355; --t-anuncio:#6aa8dd; --t-recordatorio:#a794d8;
     --f-participacion:#22d3ee; --f-juego:#4ade80; --f-creativo:#e879f9;
     --f-negocio:#fbbf24; --f-personal:#fb7185; --f-temporada:#818cf8;
     --danger:#e08070;
@@ -44,7 +40,7 @@ img{max-width:100%}
   --ink:#e7ece8; --ink-2:#aab5af; --muted:#7f8a84;
   --line:#28312d; --line-strong:#3b4640;
   --accent:#4bb99c; --accent-ink:#08120f; --accent-soft:#17332c;
-  --t-reto:#d98a4e; --t-anuncio:#6aa8dd; --t-recordatorio:#a794d8;
+  --t-reto:#f79355; --t-anuncio:#6aa8dd; --t-recordatorio:#a794d8;
   --f-participacion:#22d3ee; --f-juego:#4ade80; --f-creativo:#e879f9;
   --f-negocio:#fbbf24; --f-personal:#fb7185; --f-temporada:#818cf8;
   --danger:#e08070;
@@ -62,7 +58,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .topbar-row{display:flex;align-items:center;gap:18px;padding:12px 20px;flex-wrap:wrap}
 .brand{display:flex;flex-direction:column;gap:1px;margin-right:auto}
 .brand h1{font-family:var(--display);font-weight:700;font-size:17px;margin:0;letter-spacing:-.01em}
-.brand p{margin:0;font-size:12.5px;color:var(--muted)}
 
 .cyclenav{display:flex;align-items:center;gap:2px}
 .cyclenav .rango{display:flex;flex-direction:column;align-items:center;min-width:212px;line-height:1.25}
@@ -105,9 +100,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .lib.oculta{display:none}
 .lib-head{display:flex;align-items:center;gap:8px}
 .lib-head .label{margin-right:auto}
-/* La accion principal de la banda: crear una pieza. Va sola, de ancho
-   completo, para que no compita con el buscador ni con los filtros. */
-.lib-new{width:100%;justify-content:center;padding:9px 13px}
 .lib-tools{display:flex;flex-direction:column;gap:7px}
 .lib-row{display:flex;gap:6px}
 .lib-tools input{flex:1;min-width:0;padding:6px 9px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);font-size:13px}
@@ -174,6 +166,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chip{cursor:grab}
 .chip:active{cursor:grabbing}
 .chip.arrastrando{opacity:.4}
+/* Fija: no se arrastra, su sitio lo decide la fecha. */
+.chip.fija{cursor:default;border-left-style:double;border-left-width:6px}
+.chip .lock{flex:none;width:9px;height:9px;opacity:.8;color:var(--chipc,var(--muted))}
+.chip .lock svg{width:9px;height:9px;display:block;fill:none;stroke:currentColor;stroke-width:2.2}
 .chip.done{opacity:.5}
 .chip.done .n{text-decoration:line-through}
 .day .more{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding-left:2px}
@@ -201,10 +197,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .tag{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;padding:2px 6px;border-radius:4px;color:var(--surface);background:var(--chipc,var(--muted));font-weight:500}
 .post-top .t{font-family:var(--mono);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .ftag{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--famc,var(--line-strong));color:var(--famc,var(--muted));font-weight:500}
+.fixtag{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px dashed var(--line-strong);color:var(--ink-2);font-weight:500}
+.fixtag svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:2.2;flex:none}
 .post-top .prog{margin-left:auto;flex:none;font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
 .post-top .prog.full{color:var(--accent);font-weight:500}
 .post h3{margin:0;padding:11px 12px 0;font-family:var(--display);font-size:15px;font-weight:600;line-height:1.35;text-wrap:balance}
 .copybox{margin:9px 12px 0;padding:10px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);font-size:13.5px;white-space:pre-wrap;word-break:break-word;max-height:212px;overflow-y:auto}
+.tmpl{display:inline-flex;align-items:center;gap:6px;margin:9px 12px 0;font-size:12.5px;color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;align-self:flex-start}
+.tmpl:hover{border-bottom-color:var(--accent)}
+.tmpl svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .post-acts{display:flex;align-items:center;gap:6px;padding:11px 12px;flex-wrap:wrap}
 .post-acts .sp{margin-left:auto}
 .post.done h3{opacity:.6}
@@ -264,9 +265,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .imgprev img{display:block;width:100%;height:auto;max-height:210px;object-fit:contain}
 .imgprev .vacia{font-size:12.5px;color:var(--muted);padding:16px 12px;text-align:center}
 .imgacts{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-/* El input de archivo cuelga de .imgfield, no de .imgacts: quien abre el
-   selector es el boton "Elegir imagen". */
-.imgfield input[type=file]{display:none}
+.imgacts input[type=file]{display:none}
 .peso{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .editor{border:1px solid var(--accent);border-radius:9px;background:var(--surface);padding:13px;display:flex;flex-direction:column;gap:11px}
@@ -276,6 +275,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .field textarea{resize:vertical;min-height:120px;line-height:1.5;font-family:var(--sans)}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
 .hint{font-size:11.5px;color:var(--muted)}
+[hidden]{display:none !important}
+/* Bloque de fecha fija dentro del editor */
+.fixblk{border:1px dashed var(--line-strong);border-radius:7px;padding:9px 10px 10px;gap:7px}
+.fixblk .row{gap:8px;margin-top:1px}
+.fixblk .hint{line-height:1.45}
+.fixblk .hint b{color:var(--ink-2);font-weight:500}
 .editor-acts{display:flex;gap:8px;align-items:center}
 
 .empty{padding:22px 8px;text-align:center;color:var(--muted);font-size:13.5px}
@@ -300,7 +305,6 @@ button,input,select,textarea{font:inherit;color:inherit}
   *{transition:none !important;animation:none !important}
 }
 
-/* ---------- sesion ---------- */
 .sesion{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted)}
 
 /* ---------- pantalla de entrada ---------- */
@@ -318,8 +322,6 @@ body.bloqueado{overflow:hidden}
 #puertaMsg{font-size:12.5px;color:var(--muted);min-height:1.2em}
 #puertaMsg.err{color:var(--danger)}
 </style>
-</head>
-<body class="bloqueado">
 
 <header class="topbar" id="topbar">
   <div class="topbar-row">
@@ -347,7 +349,6 @@ body.bloqueado{overflow:hidden}
     <span class="stat" id="cover">&nbsp;</span>
     <span class="stat" id="progText">&nbsp;</span>
     <div class="rail"><span id="rail" style="width:0%"></span></div>
-    <span class="stat" id="progCiclo">&nbsp;</span>
     <div class="legend" id="legend"></div>
   </div>
 </header>
@@ -358,8 +359,9 @@ body.bloqueado{overflow:hidden}
   <aside class="lib" id="lib">
     <div class="lib-head">
       <span class="label">Libreria</span>
+      <span class="stat" id="libCount">&nbsp;</span>
+      <button class="btn btn-primary" id="libNew" title="Crear una pieza nueva y arrastrarla al ciclo"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nuevo</button>
     </div>
-    <button class="btn btn-primary lib-new" id="libNew"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva pieza</button>
     <div class="lib-tools">
       <div class="lib-row">
         <input id="libSearch" placeholder="Buscar en la libreria" autocomplete="off">
@@ -440,10 +442,23 @@ window.GALI.listo = new Promise(function(res, rej){
      La programacion es un CICLO FIJO de 4 semanas (28 dias) que
      corre sin parar. No tiene nada que ver con los meses: un ciclo
      puede empezar en un mes y terminar en otro.
-       coleccion "plantilla": {week: 1-4, dow: 0-6, time, type, title, copy}
+       coleccion "plantilla": {week: 1-4, dow: 0-6, time, type, title, copy, link, fija}
        week 1-4 = semana dentro del ciclo; dow 0 = lunes, 6 = domingo.
      Son 28 casillas fijas, siempre existen todas: cualquier dia del
      ano cae exactamente en una.
+
+     PUBLICACIONES FIJAS
+     Una publicacion puede quedar clavada a una fecha real en vez de
+     flotar con el ciclo. El campo "fija" guarda la regla:
+       null                    suelta: vive en su casilla (week, dow)
+       {k:"mes", d:1..31}      ese dia de cada mes (d:0 = ultimo dia)
+       {k:"ano", m:0..11, d:}  esa fecha exacta, cada ano
+       {k:"nth", n:, w:0..6}   n-esimo dia de la semana del mes
+                               (n: 1..4, o -1 para el ultimo)
+     Su casilla no se guarda: se calcula. En cada vuelta se dibuja en
+     el dia real que cumple la regla, y si el ciclo visible no pasa
+     por esa fecha simplemente no aparece (sigue en la db). week y dow
+     se conservan como su casilla de origen, para cuando se suelte.
      Lo unico que cambia de una vuelta a la siguiente es el registro
      de envio:
        documento "envios/<AAAA-MM-DD del lunes en que arranca el ciclo>":
@@ -457,7 +472,7 @@ window.GALI.listo = new Promise(function(res, rej){
   // desde aqui, hacia adelante y hacia atras. Mover esta fecha recoloca
   // el calendario, pero NO toca la plantilla: cada publicacion vive en
   // su casilla (semana, dia), que no depende del ancla.
-  var ANCHOR = "2026-09-07";
+  var ANCHOR = "2026-08-31";
   var WEEKS_MIN = 1, WEEKS_MAX = 8, WEEKS_DEF = 4;
 
   var TYPES = {
@@ -536,12 +551,7 @@ window.GALI.listo = new Promise(function(res, rej){
   function ancla(){ return lunesDe(parseYmd(ANCHOR)); }
   // Lunes en que arranca el ciclo que contiene esa fecha.
   function cicloDe(d){
-    var a = ancla();
-    // Antes del arranque no hay ciclos: la cuenta seguiria hacia atras y
-    // mostraria vueltas negativas que nunca existieron. Se muestra el
-    // primero.
-    if (lunesDe(d) < a) return a;
-    var semanas = Math.floor(difDias(a, lunesDe(d)) / 7);
+    var semanas = Math.floor(difDias(ancla(), lunesDe(d)) / 7);
     var dentro = ((semanas % weeks) + weeks) % weeks;
     return suma(lunesDe(d), -dentro * 7);
   }
@@ -550,12 +560,87 @@ window.GALI.listo = new Promise(function(res, rej){
   // Fecha real de una casilla dentro del ciclo visible.
   function fechaDe(week, dow){ return suma(cycle, (week - 1) * 7 + dow); }
   function claveCiclo(){ return ymd(cycle); }
-  // En que casilla del ciclo VISIBLE cae hoy. null si se esta mirando
-  // otra vuelta, hacia adelante o hacia atras.
-  function casillaDeHoy(){
-    var off = difDias(cycle, hoy());
-    if (off < 0 || off >= slots()) return null;
-    return {w: Math.floor(off / 7) + 1, d: off % 7};
+
+  /* ---------- publicaciones fijas a una fecha ---------- */
+  var NTH = [{v:1,l:"primer"},{v:2,l:"segundo"},{v:3,l:"tercer"},{v:4,l:"cuarto"},{v:-1,l:"ultimo"}];
+
+  function diasDelMes(d){ return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); }
+  function esFija(p){ return !!(p && p.fija && p.fija.k); }
+
+  // La regla llega de la db: se acepta solo si esta completa y en rango.
+  function normFija(fx){
+    if (!fx || typeof fx !== "object") return null;
+    var a, b;
+    if (fx.k === "mes"){ a = parseInt(fx.d, 10); return (a >= 0 && a <= 31) ? {k:"mes", d:a} : null; }
+    if (fx.k === "ano"){
+      a = parseInt(fx.m, 10); b = parseInt(fx.d, 10);
+      return (a >= 0 && a <= 11 && b >= 1 && b <= 31) ? {k:"ano", m:a, d:b} : null;
+    }
+    if (fx.k === "nth"){
+      a = parseInt(fx.n, 10); b = parseInt(fx.w, 10);
+      return ((a === -1 || (a >= 1 && a <= 4)) && b >= 0 && b <= 6) ? {k:"nth", n:a, w:b} : null;
+    }
+    return null;
+  }
+
+  // Unica prueba: esta fecha cumple la regla?
+  function cumple(fx, d){
+    if (!fx || !fx.k) return false;
+    if (fx.k === "mes") return fx.d === 0 ? d.getDate() === diasDelMes(d) : d.getDate() === fx.d;
+    if (fx.k === "ano") return d.getMonth() === fx.m && d.getDate() === fx.d;
+    if (fx.k === "nth"){
+      if (((d.getDay() + 6) % 7) !== fx.w) return false;
+      return fx.n === -1 ? (d.getDate() + 7 > diasDelMes(d)) : (Math.ceil(d.getDate() / 7) === fx.n);
+    }
+    return false;
+  }
+  // Primera fecha desde "desde" que cumple la regla. Un ano de margen
+  // basta para cualquiera de las tres reglas.
+  function proximaFecha(fx, desde){
+    for (var i = 0; i < 800; i++){
+      var d = suma(desde, i);
+      if (cumple(fx, d)) return d;
+    }
+    return null;
+  }
+  function etiquetaFija(fx){
+    if (!fx || !fx.k) return "";
+    if (fx.k === "mes") return fx.d === 0 ? "ultimo dia del mes" : "dia " + fx.d + " de cada mes";
+    if (fx.k === "ano") return fx.d + " de " + MESES[fx.m] + ", cada ano";
+    if (fx.k === "nth"){
+      var o = "";
+      for (var i = 0; i < NTH.length; i++){ if (NTH[i].v === fx.n) o = NTH[i].l; }
+      return o + " " + DOW[fx.w] + " del mes";
+    }
+    return "";
+  }
+  // Casillas del ciclo visible que ocupa una publicacion. Una suelta
+  // ocupa la suya; una fija ocupa todas las que caen en su regla, que
+  // en un ciclo largo pueden ser dos (dos meses dentro de la vuelta).
+  function celdasDe(p){
+    if (!esFija(p)) return p.week <= weeks ? [{w:p.week, d:p.dow}] : [];
+    var out = [], total = slots();
+    for (var i = 0; i < total; i++){
+      if (cumple(p.fija, suma(cycle, i))) out.push({w: Math.floor(i / 7) + 1, d: i % 7});
+    }
+    return out;
+  }
+  // Indice casilla -> publicaciones, rehecho en cada render.
+  var ixCache = null;
+  function indice(){
+    if (ixCache) return ixCache;
+    var ix = {};
+    tpl.forEach(function(p){
+      celdasDe(p).forEach(function(c){
+        var k = c.w + ":" + c.d;
+        (ix[k] || (ix[k] = [])).push(p);
+      });
+    });
+    Object.keys(ix).forEach(function(k){
+      ix[k].sort(function(a,b){ return (a.time || "99:99").localeCompare(b.time || "99:99"); });
+    });
+    ixCache = ix;
+    return ix;
   }
 
   /* ---------- estado de envio de esta vuelta ---------- */
@@ -573,13 +658,10 @@ window.GALI.listo = new Promise(function(res, rej){
   // Publicaciones dentro del largo actual del ciclo. Las que quedaron
   // en semanas de mas al acortarlo NO se borran: siguen en la db,
   // fuera de vista, y reaparecen si se vuelve a ampliar.
-  function enCiclo(){ return tpl.filter(function(p){ return p.week <= weeks; }); }
-  function guardadas(){ return tpl.filter(function(p){ return p.week > weeks; }); }
+  function enCiclo(){ return tpl.filter(function(p){ return celdasDe(p).length > 0; }); }
+  function guardadas(){ return tpl.filter(function(p){ return !esFija(p) && p.week > weeks; }); }
 
-  function forSlot(week, dow){
-    return tpl.filter(function(p){ return p.week === week && p.dow === dow; })
-              .sort(function(a,b){ return (a.time || "99:99").localeCompare(b.time || "99:99"); });
-  }
+  function forSlot(week, dow){ return indice()[week + ":" + dow] || []; }
 
   /* ---------- avisos ---------- */
   function toast(msg){
@@ -601,25 +683,21 @@ window.GALI.listo = new Promise(function(res, rej){
     pinned = msg ? bloque(msg, kind) : "";
     paintNotice();
   }
+  // Acepta un texto o varios: cada uno sale en su propio bloque.
   function aviso(msg){
-    auto = msg ? bloque(msg) : "";
+    var lista = msg ? (Array.isArray(msg) ? msg : [msg]) : [];
+    auto = lista.map(function(m){ return bloque(m); }).join("");
     paintNotice();
   }
 
   /* ---------- errores de db ---------- */
   function describe(e){
-    var code = (e && e.code) || "";
-    // Firestore separa las palabras con guion; el calendario nacio con
-    // guion bajo. Se aceptan las dos formas.
-    code = code.replace("firestore/", "").replace(/-/g, "_");
+    var code = e && e.code;
     if (code === "invalid_argument" || code === "transform_error") return "El dato no se pudo guardar: revisa la semana y la hora.";
-    if (code === "permission_denied") return "Tu cuenta no tiene permiso para cambiar el calendario. Entra con tu correo de Galilei.";
-    if (code === "unauthenticated") return "Se cerro tu sesion. Vuelve a entrar con tu correo de Galilei.";
     if (code === "quota_exceeded") return "El ciclo llego a su tope de publicaciones. Elimina algunas para poder crear mas.";
     if (code === "resource_exhausted") return "Demasiados cambios seguidos. Espera unos segundos y vuelve a intentar.";
     if (code === "revoked") return "Se cerro el acceso al calendario. La vista quedo en solo lectura.";
     if (code === "not_granted" || code === "capability_disabled" || code === "capability_removed") return "Esta vista no tiene acceso al almacenamiento del calendario.";
-    if (code === "unavailable") return "Sin conexion con el calendario. Revisa tu internet.";
     return "No se pudo guardar. Reintenta en un momento.";
   }
   function readOnly(){
@@ -659,7 +737,9 @@ window.GALI.listo = new Promise(function(res, rej){
           time: b.time || "",
           type: TYPES[b.type] ? b.type : "anuncio",
           title: b.title || "",
-          copy: b.copy || ""
+          copy: b.copy || "",
+          link: b.link || "",
+          fija: normFija(b.fija)
         };
       });
       dbReady = true;
@@ -713,7 +793,8 @@ window.GALI.listo = new Promise(function(res, rej){
           grupos: parseInt(b.grupos, 10) || 0,
           img: b.img || "",
           title: b.title || "",
-          copy: b.copy || ""
+          copy: b.copy || "",
+          link: b.link || ""
         };
       });
       renderLib();
@@ -736,7 +817,9 @@ window.GALI.listo = new Promise(function(res, rej){
   }
 
   /* ---------- render ---------- */
-  function render(){ renderHeader(); renderGrid(); renderDrawer(); renderLib(); }
+  // El indice de casillas depende de tpl, del ciclo visible y del
+  // largo del ciclo: se tira en cada render y se rehace al vuelo.
+  function render(){ ixCache = null; renderHeader(); renderGrid(); renderDrawer(); renderLib(); }
 
   function renderHeader(){
     var fin = suma(cycle, slots() - 1);
@@ -746,7 +829,7 @@ window.GALI.listo = new Promise(function(res, rej){
 
     // Cobertura: cuantas casillas del ciclo vigente tienen algo programado.
     var llenas = {};
-    enCiclo().forEach(function(p){ llenas[p.week + ":" + p.dow] = 1; });
+    tpl.forEach(function(p){ celdasDe(p).forEach(function(c){ llenas[c.w + ":" + c.d] = 1; }); });
     var cubiertas = Object.keys(llenas).length;
     var cov = $("cover");
     var tot = slots();
@@ -754,51 +837,19 @@ window.GALI.listo = new Promise(function(res, rej){
     cov.classList.toggle("warn", cubiertas < tot);
     cov.title = cubiertas < tot ? (tot - cubiertas) + " casillas del ciclo siguen vacias" : "El ciclo esta completo";
 
-    // La barra mide HOY, no el ciclo completo: lo que decide la operacion
-    // diaria es si ya salio lo de hoy. El total del ciclo queda al lado,
-    // en segundo plano.
     var vivas = enCiclo();
-    var hs = casillaDeHoy();
-    var foco = hs ? forSlot(hs.w, hs.d) : [];
-    var done = 0, total = 0, text;
-
-    function cuenta(lista){
-      if (filterCo){
-        return {
-          done: lista.filter(function(p){ return !!sentOf(p.id)[filterCo]; }).length,
-          total: lista.length
-        };
-      }
-      return {
-        done: lista.reduce(function(a, p){ return a + sentCount(p); }, 0),
-        total: lista.length * TOTAL_CO
-      };
-    }
-
-    if (!hs){
-      // Se esta mirando otra vuelta: hoy no cae en el ciclo visible.
-      var c = cuenta(vivas);
-      done = c.done; total = c.total;
-      text = "<b>" + done + "</b> de <b>" + total + "</b> " +
-             (filterCo ? "enviadas a " + esc(coName(filterCo)) : "envios") + " en esta vuelta";
-    } else if (!foco.length){
-      text = "Hoy no hay nada programado";
+    var done, total, text;
+    if (filterCo){
+      total = vivas.length;
+      done = vivas.filter(function(p){ return !!sentOf(p.id)[filterCo]; }).length;
+      text = "<b>" + done + "</b> de <b>" + total + "</b> enviadas a " + esc(coName(filterCo));
     } else {
-      var h = cuenta(foco);
-      done = h.done; total = h.total;
-      text = "Hoy: <b>" + done + "</b> de <b>" + total + "</b> " +
-             (filterCo ? "enviadas a " + esc(coName(filterCo)) : "envios");
+      total = vivas.length * TOTAL_CO;
+      done = vivas.reduce(function(a,p){ return a + sentCount(p); }, 0);
+      text = "<b>" + done + "</b> de <b>" + total + "</b> envios del ciclo";
     }
-
     $("progText").innerHTML = text;
-    $("progText").classList.toggle("warn", !!hs && total > 0 && done < total);
     $("rail").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
-
-    // Referencia del ciclo entero, para no perder de vista el avance global.
-    var gc = cuenta(vivas);
-    $("progCiclo").innerHTML = hs
-      ? "ciclo <b>" + gc.done + "</b>/<b>" + gc.total + "</b>"
-      : "";
 
     // Franja exterior del chip = tipo; franja interior = categoria.
     var leyenda = TYPE_KEYS.map(function(k){
@@ -814,19 +865,20 @@ window.GALI.listo = new Promise(function(res, rej){
     $("filter").classList.toggle("on", !!filterCo);
     $("weekSel").value = weeks;
 
-    // Nada se pierde al acortar el ciclo: se avisa que quedo guardado.
+    // Nada se pierde al acortar el ciclo ni al fijar una fecha lejana:
+    // se avisa donde quedo cada cosa que no se ve en esta pantalla.
+    var avisos = [];
     var g = guardadas();
     if (g.length){
       var sem = {};
       g.forEach(function(p){ sem[p.week] = 1; });
       var claves = Object.keys(sem).sort(function(a,b){ return a-b; });
-      aviso(g.length + (g.length === 1 ? " publicacion quedo guardada" : " publicaciones quedaron guardadas") +
+      avisos.push(g.length + (g.length === 1 ? " publicacion quedo guardada" : " publicaciones quedaron guardadas") +
             (claves.length === 1 ? " en la semana " : " en las semanas ") + claves.join(", ") +
             ", fuera del ciclo de " + weeks + (weeks === 1 ? " semana" : " semanas") +
             ". No se borro nada: vuelve" + (g.length === 1 ? "" : "n") + " a aparecer si amplias el ciclo.");
-    } else {
-      aviso("");
     }
+    aviso(avisos);
   }
 
   function renderGrid(){
@@ -856,11 +908,15 @@ window.GALI.listo = new Promise(function(res, rej){
           var mark = filterCo
             ? (sentOf(p.id)[filterCo] ? "enviado" : "pendiente")
             : sentCount(p) + "/" + TOTAL_CO;
-          html += '<span class="chip' + (isDone(p) ? " done" : "") + '" draggable="true" data-post="' + p.id +
+          var fijo = esFija(p);
+          html += '<span class="chip' + (isDone(p) ? " done" : "") + (fijo ? " fija" : "") +
+                  '" draggable="' + (fijo ? "false" : "true") + '" data-post="' + p.id +
+                  (fijo ? '" title="Fija: ' + esc(etiquetaFija(p.fija)) : "") +
                   '" style="--chipc:' + TYPES[p.type].color +
                   (p.familia ? ";--famc:" + FAMILIAS[p.familia].color : "") + '">' +
                   '<span class="meta">' +
                     (p.time ? '<span class="t">' + esc(p.time) + "</span>" : "") +
+                    (fijo ? '<span class="lock">' + ICON_LOCK + "</span>" : "") +
                     (p.img ? '<span class="pic">' + ICON_PIC + "</span>" : "") +
                     '<span class="cnt">' + mark + "</span>" +
                   "</span>" +
@@ -923,7 +979,9 @@ window.GALI.listo = new Promise(function(res, rej){
 
   var ICON_COPY = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8"/></svg>';
   var ICON_CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L19 6"/></svg>';
+  var ICON_LINK = '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.5.5l2-2A5 5 0 0012.5 4.5L11 6"/><path d="M14 11a5 5 0 00-7.5-.5l-2 2A5 5 0 0011.5 19.5L13 18"/></svg>';
   var ICON_TRASH = '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
+  var ICON_LOCK = '<svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>';
 
   /* ---------- confirmacion ---------- */
   var pendiente = null;   // que hacer si el usuario dice que si
@@ -977,6 +1035,7 @@ window.GALI.listo = new Promise(function(res, rej){
     head.innerHTML = '<span class="ord">' + pad(indice + 1) + "/" + pad(total) + "</span>" +
                      '<span class="tag">' + esc(TYPES[p.type].label) + "</span>" +
                      (p.familia ? '<span class="ftag">' + esc(FAMILIAS[p.familia].label) + "</span>" : "") +
+                     (esFija(p) ? '<span class="fixtag" title="Esta publicacion no se mueve con el ciclo">' + ICON_LOCK + esc(etiquetaFija(p.fija)) + "</span>" : "") +
                      '<span class="t">' + (p.time ? esc(p.time) : "sin hora") + "</span>" +
                      '<span class="prog' + (n === TOTAL_CO ? " full" : "") + '">' + n + "/" + TOTAL_CO + " enviadas</span>";
     el.appendChild(head);
@@ -1008,6 +1067,16 @@ window.GALI.listo = new Promise(function(res, rej){
       el.appendChild(th);
     }
 
+    if (p.link){
+      var a = document.createElement("a");
+      a.className = "tmpl";
+      a.href = p.link;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML = ICON_LINK + "<span>Abrir template</span>";
+      el.appendChild(a);
+    }
+
     var acts = document.createElement("div");
     acts.className = "post-acts";
 
@@ -1034,6 +1103,13 @@ window.GALI.listo = new Promise(function(res, rej){
       ci.title = "Copiarla para pegarla directo en WhatsApp";
       ci.onclick = function(){ copiarImagen(p.img, ci); };
       acts.appendChild(ci);
+
+      var dl = document.createElement("button");
+      dl.className = "btn btn-quiet";
+      dl.textContent = "Descargar";
+      dl.title = "Guardarla como archivo para adjuntarla";
+      dl.onclick = function(){ descargarImagen(p.img, p.title); };
+      acts.appendChild(dl);
     }
 
     var sp = document.createElement("span");
@@ -1045,7 +1121,7 @@ window.GALI.listo = new Promise(function(res, rej){
     edit.textContent = "Editar";
     edit.title = "Cambia esta publicacion en todas las vueltas del ciclo";
     edit.disabled = !dbReady;
-    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, img:p.img, title:p.title, copy:p.copy}); };
+    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, img:p.img, title:p.title, copy:p.copy, link:p.link, fija:p.fija || null}); };
     acts.appendChild(edit);
 
     acts.appendChild(botonBorrar(
@@ -1095,8 +1171,8 @@ window.GALI.listo = new Promise(function(res, rej){
      El artifact bloquea imagenes externas, asi que no sirve pegar
      una URL: la imagen viaja dentro del documento como data URI.
      Un documento admite 256 KiB, asi que se comprime en el navegador
-     antes de guardar. Para mandarla por WhatsApp se copia al
-     portapapeles y se pega en el chat.
+     antes de guardar. Para mandarla por WhatsApp se descarga con la
+     capability "downloads".
      ============================================================ */
   var LIMITE_IMG = 168000;   // caracteres del data URI, con margen bajo los 256 KiB
 
@@ -1141,13 +1217,40 @@ window.GALI.listo = new Promise(function(res, rej){
     });
   }
 
+  function dataUriABlob(uri){
+    var partes = uri.split(",");
+    var m = /:(.*?);/.exec(partes[0]);
+    var bin = atob(partes[1]);
+    var n = bin.length, u8 = new Uint8Array(n);
+    while (n--) u8[n] = bin.charCodeAt(n);
+    return new Blob([u8], {type: m ? m[1] : "image/jpeg"});
+  }
+
+  function nombreArchivo(titulo){
+    var s = String(titulo || "imagen").normalize("NFD").replace(/[̀-ͯ]/g, "")
+             .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+    return (s || "imagen") + ".jpg";
+  }
+
+  function descargarImagen(uri, titulo){
+    if (!uri) return;
+    try {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(dataUriABlob(uri));
+      a.download = nombreArchivo(titulo);
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    } catch(e){ toast("No se pudo descargar la imagen."); }
+  }
+
   var ICON_PIC = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-6 6"/></svg>';
 
   // Copiar la imagen al portapapeles para pegarla directo en WhatsApp.
   // El portapapeles solo acepta PNG, asi que se reconvierte al vuelo.
   function copiarImagen(uri, btn){
     if (!navigator.clipboard || !window.ClipboardItem || !window.isSecureContext){
-      toast("Este navegador no permite copiar imagenes. Abre la imagen y guardala con clic derecho.");
+      toast("Este navegador no permite copiar imagenes. Usa Descargar imagen.");
       return;
     }
     // El ClipboardItem debe construirse dentro del clic, por eso se le
@@ -1169,7 +1272,7 @@ window.GALI.listo = new Promise(function(res, rej){
       btn.innerHTML = ICON_CHECK + "<span>Imagen copiada</span>";
       setTimeout(function(){ btn.innerHTML = original; }, 2000);
     }, function(){
-      toast("El navegador bloqueo el portapapeles. Guarda la imagen con clic derecho sobre ella.");
+      toast("El navegador bloqueo el portapapeles. Usa Descargar imagen.");
     });
   }
 
@@ -1291,11 +1394,13 @@ window.GALI.listo = new Promise(function(res, rej){
 
   /* ---------- editor ---------- */
   function newDraft(w, dw){
-    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", img:"", title:"", copy:""};
+    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", img:"", title:"", copy:"", link:"", fija:null};
   }
   function startEditor(draft){
     editing = draft;
-    selected = {w:draft.week, d:draft.dow};
+    // Al editar una fija, el panel se queda en la casilla donde se abrio:
+    // su casilla de origen ya no es donde se ve.
+    if (!draft.id || !selected) selected = {w:draft.week, d:draft.dow};
     renderDrawer();
   }
 
@@ -1328,9 +1433,11 @@ window.GALI.listo = new Promise(function(res, rej){
           FAM_KEYS.map(function(k){ return '<option value="' + k + '"' + (editing.familia === k ? " selected" : "") + ">" + FAMILIAS[k].label + "</option>"; }).join("") +
         "</select></div>" +
       "</div>" +
+      bloqueFijar() +
       '<div class="field"><span class="label">Titulo</span><input id="fTitle" maxlength="70" placeholder="Reto de la semana" value="' + esc(editing.title) + '"></div>' +
       '<div class="field"><span class="label">Copy para WhatsApp</span><textarea id="fCopy" placeholder="El mensaje exacto que se pega en el grupo.">' + esc(editing.copy) + "</textarea>" +
-        '<span class="hint">Se repite en esa casilla cada vuelta del ciclo, igual para las ' + TOTAL_CO + " companias.</span></div>" +
+        '<span class="hint">Se repite cada vuelta del ciclo, igual para las ' + TOTAL_CO + " companias.</span></div>" +
+      '<div class="field"><span class="label">Template en Drive (opcional)</span><input id="fLink" placeholder="https://drive.google.com/..." value="' + esc(editing.link) + '"></div>' +
       '<div class="editor-acts"><button class="btn btn-primary" type="submit">Guardar</button>' +
       '<button class="btn btn-quiet" type="button" id="fCancel">Cancelar</button></div>';
 
@@ -1339,7 +1446,98 @@ window.GALI.listo = new Promise(function(res, rej){
 
     el.onsubmit = function(ev){ ev.preventDefault(); savePost(); };
     el.querySelector("#fCancel").onclick = function(){ editing = null; renderDrawer(); };
+    cablearFijar(el);
     return el;
+  }
+
+  /* ---------- fijar la publicacion a una fecha ---------- */
+  // Tres reglas, cada una con sus propios controles. Solo se muestran
+  // los de la regla elegida; el resto queda oculto pero en el DOM,
+  // asi cambiar de regla y volver no pierde lo que ya estaba puesto.
+  function bloqueFijar(){
+    var fx = editing.fija && editing.fija.k ? editing.fija : null;
+    var k = fx ? fx.k : "";
+    var diaMes = fx && fx.k === "mes" ? fx.d : 1;
+    var anoMes = fx && fx.k === "ano" ? fx.m : hoy().getMonth();
+    var anoDia = fx && fx.k === "ano" ? fx.d : hoy().getDate();
+    var nthN   = fx && fx.k === "nth" ? fx.n : -1;
+    var nthW   = fx && fx.k === "nth" ? fx.w : 4;
+
+    function opts(lista, sel){
+      return lista.map(function(o){
+        return '<option value="' + o.v + '"' + (String(o.v) === String(sel) ? " selected" : "") + ">" + o.l + "</option>";
+      }).join("");
+    }
+    var dias = [{v:0, l:"ultimo dia"}];
+    for (var i = 1; i <= 31; i++) dias.push({v:i, l:"dia " + i});
+    var mesesOpt = MESES.map(function(m, i){ return {v:i, l:m}; });
+    var diasAno = [];
+    for (var j = 1; j <= 31; j++) diasAno.push({v:j, l:"" + j});
+
+    return '<div class="field fixblk">' +
+      '<span class="label">Fijar en el calendario</span>' +
+      '<select id="fFix">' +
+        '<option value=""' + (k ? "" : " selected") + ">Suelta: sigue la casilla del ciclo</option>" +
+        '<option value="mes"' + (k === "mes" ? " selected" : "") + ">Fija a un dia del mes</option>" +
+        '<option value="nth"' + (k === "nth" ? " selected" : "") + ">Fija a un dia de la semana del mes</option>" +
+        '<option value="ano"' + (k === "ano" ? " selected" : "") + ">Fija a una fecha del ano</option>" +
+      "</select>" +
+      '<div class="row" id="gMes"' + (k === "mes" ? "" : " hidden") + '>' +
+        '<div class="field"><span class="label">Cada mes, el</span><select id="fMesDia">' + opts(dias, diaMes) + "</select></div>" +
+      "</div>" +
+      '<div class="row" id="gNth"' + (k === "nth" ? "" : " hidden") + '>' +
+        '<div class="field"><span class="label">Cual</span><select id="fNthN">' + opts(NTH.map(function(o){ return {v:o.v, l:o.l}; }), nthN) + "</select></div>" +
+        '<div class="field"><span class="label">Dia</span><select id="fNthW">' + opts(DOW.map(function(d, i){ return {v:i, l:d}; }), nthW) + "</select></div>" +
+      "</div>" +
+      '<div class="row" id="gAno"' + (k === "ano" ? "" : " hidden") + '>' +
+        '<div class="field"><span class="label">Mes</span><select id="fAnoMes">' + opts(mesesOpt, anoMes) + "</select></div>" +
+        '<div class="field" style="flex:0 1 90px"><span class="label">Dia</span><select id="fAnoDia">' + opts(diasAno, anoDia) + "</select></div>" +
+      "</div>" +
+      '<span class="hint" id="fixHint"></span>' +
+    "</div>";
+  }
+
+  // Lee la regla que hay puesta ahora mismo en el formulario.
+  function leerFijar(){
+    var k = $("fFix") ? $("fFix").value : "";
+    if (k === "mes") return {k:"mes", d: parseInt($("fMesDia").value, 10)};
+    if (k === "nth") return {k:"nth", n: parseInt($("fNthN").value, 10), w: parseInt($("fNthW").value, 10)};
+    if (k === "ano") return {k:"ano", m: parseInt($("fAnoMes").value, 10), d: parseInt($("fAnoDia").value, 10)};
+    return null;
+  }
+
+  function cablearFijar(el){
+    var sel = el.querySelector("#fFix");
+    if (!sel) return;
+    function pintar(){
+      var k = sel.value;
+      el.querySelector("#gMes").hidden = k !== "mes";
+      el.querySelector("#gNth").hidden = k !== "nth";
+      el.querySelector("#gAno").hidden = k !== "ano";
+      // Fija ignora la casilla: se apagan los selectores de semana y dia.
+      var w = el.querySelector("#fWeek"), d = el.querySelector("#fDow");
+      w.disabled = d.disabled = !!k;
+      w.title = d.title = k ? "Una publicacion fija no usa casilla: su sitio lo decide la fecha." : "";
+
+      var fx = leerFijar(), h = el.querySelector("#fixHint");
+      if (!fx){
+        h.innerHTML = "Se repite en su casilla cada vuelta del ciclo. Se puede arrastrar a otro dia.";
+        return;
+      }
+      var pr = proximaFecha(fx, hoy());
+      var dentro = pr && celdasDe({fija:fx}).length > 0;
+      h.innerHTML = "Se publica el <b>" + esc(etiquetaFija(fx)) + "</b>. " +
+        (pr ? "La proxima vez: <b>" + esc(larga(pr)) + " de " + pr.getFullYear() + "</b>. " : "") +
+        (dentro ? "Cae dentro de la vuelta que estas viendo."
+                : "No cae en esta vuelta: aparece sola cuando el ciclo pase por esa fecha.") +
+        " No se puede arrastrar.";
+    }
+    sel.onchange = pintar;
+    ["fMesDia","fNthN","fNthW","fAnoMes","fAnoDia"].forEach(function(id){
+      var c = el.querySelector("#" + id);
+      if (c) c.onchange = pintar;
+    });
+    pintar();
   }
 
   function savePost(){
@@ -1352,18 +1550,29 @@ window.GALI.listo = new Promise(function(res, rej){
       familia: $("fFam").value,
       img: editing.img || "",
       title: $("fTitle").value.trim(),
-      copy: $("fCopy").value
+      copy: $("fCopy").value,
+      link: $("fLink").value.trim(),
+      fija: leerFijar()
     };
     if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
 
     var id = editing.id;
     var ref = id ? db.collection("plantilla").doc(id) : db.collection("plantilla").doc();
     editing = null;
-    selected = {w:body.week, d:body.dow};
+    // Una fija se ve donde caiga su fecha, no en su casilla de origen:
+    // el panel se abre en el dia donde de verdad quedo.
+    var donde = celdasDe(body)[0];
+    selected = donde ? {w:donde.w, d:donde.d} : {w:body.week, d:body.dow};
+    ixCache = null;
     renderDrawer();
     write(function(){ return ref.set(body); }).then(function(){
-      toast(id ? "Cambios guardados en el ciclo."
-               : "Agregada a la semana " + body.week + ", " + DOW[body.dow] + ".");
+      if (body.fija){
+        toast((id ? "Fijada" : "Agregada y fijada") + " al " + etiquetaFija(body.fija) +
+              (donde ? "." : ": no cae en esta vuelta."));
+      } else {
+        toast(id ? "Cambios guardados en el ciclo."
+                 : "Agregada a la semana " + body.week + ", " + DOW[body.dow] + ".");
+      }
     }, function(){});
   }
 
@@ -1409,7 +1618,7 @@ window.GALI.listo = new Promise(function(res, rej){
      Retos y anuncios reutilizables que viven fuera del ciclo. Se
      arrastran a una casilla para programarlos; lo que se suelta es
      una COPIA, asi que editar el ciclo no toca la libreria ni al
-     reves. Coleccion "libreria": {type, title, copy}.
+     reves. Coleccion "libreria": {type, title, copy, link}.
      ============================================================ */
   function libVisible(){
     var q = libQ.trim().toLowerCase();
@@ -1423,6 +1632,8 @@ window.GALI.listo = new Promise(function(res, rej){
   }
 
   function renderLib(){
+    $("libCount").textContent = lib.length ? lib.length + (lib.length === 1 ? " item" : " items") : "";
+
     $("libFams").innerHTML = ['<button data-f="" class="' + (libFam ? "" : "on") + '">Todas</button>']
       .concat(FAM_KEYS.map(function(k){
         var n = lib.filter(function(it){ return it.familia === k; }).length;
@@ -1474,7 +1685,7 @@ window.GALI.listo = new Promise(function(res, rej){
 
       var ed = document.createElement("button");
       ed.textContent = "Editar";
-      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, grupos:it.grupos, img:it.img, title:it.title, copy:it.copy}; renderLib(); };
+      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, grupos:it.grupos, img:it.img, title:it.title, copy:it.copy, link:it.link}; renderLib(); };
       acts.appendChild(ed);
 
       acts.appendChild(botonBorrar(
@@ -1541,14 +1752,15 @@ window.GALI.listo = new Promise(function(res, rej){
 
     el.onsubmit = function(ev){
       ev.preventDefault();
-      // grupos no se edita aqui: se conserva tal como estaba.
+      // grupos y link no se editan aqui: se conservan tal como estaban.
       var body = {
         type: $("lType").value,
         familia: $("lFam").value,
         grupos: libEdit.grupos || 0,
         img: libEdit.img || "",
         title: $("lTitle").value.trim(),
-        copy: $("lCopy").value
+        copy: $("lCopy").value,
+        link: libEdit.link || ""
       };
       if (!body.title && !body.copy){ toast("Escribe al menos un titulo o el copy."); return; }
       var ref = libEdit.id ? db.collection("libreria").doc(libEdit.id) : db.collection("libreria").doc();
@@ -1569,7 +1781,7 @@ window.GALI.listo = new Promise(function(res, rej){
     var it = null;
     for (var i = 0; i < lib.length; i++){ if (lib[i].id === id){ it = lib[i]; break; } }
     if (!it){ toast("Esa pieza ya no esta en la libreria."); return; }
-    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", img:it.img || "", title:it.title, copy:it.copy};
+    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", img:it.img || "", title:it.title, copy:it.copy, link:it.link, fija:null};
     write(function(){ return db.collection("plantilla").doc().set(body); })
       .then(function(){ toast('"' + (it.title || TYPES[it.type].label) + '" programada en semana ' + w + ", " + DOW[dw] + "."); }, function(){});
   }
@@ -1578,13 +1790,17 @@ window.GALI.listo = new Promise(function(res, rej){
     var p = null;
     for (var i = 0; i < tpl.length; i++){ if (tpl[i].id === id){ p = tpl[i]; break; } }
     if (!p) return;
+    if (esFija(p)){
+      toast("Esa publicacion esta fija al " + etiquetaFija(p.fija) + ". Cambia la regla desde Editar.");
+      return;
+    }
     if (p.week === w && p.dow === dw) return;
     write(function(){ return db.collection("plantilla").doc(id).update({week:w, dow:dw}); })
       .then(function(){ toast("Movida a semana " + w + ", " + DOW[dw] + "."); }, function(){});
   }
   $("libNew").onclick = function(){
     if (!dbReady){ toast("Sin conexion al almacenamiento del calendario."); return; }
-    libEdit = {id:null, type:"reto", familia:"", grupos:0, img:"", title:"", copy:""};
+    libEdit = {id:null, type:"reto", familia:"", grupos:0, img:"", title:"", copy:"", link:""};
     renderLib();
     var t = $("lTitle"); if (t) t.focus();
   };

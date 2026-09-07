@@ -19,7 +19,7 @@ abrirla y editarla**, con los datos compartidos y en vivo.
 | `firebase-init.js` | El login y el puente con Firestore. |
 | `firestore.rules` | Quien puede leer y escribir. Se publica en Firebase. |
 | `importar.html` | Carga los datos que ya existian. Se usa una sola vez. |
-| `datos-iniciales.json` | Las 11 publicaciones del ciclo y las 37 piezas de la libreria. |
+| `datos-iniciales.json` | Las 21 publicaciones del ciclo y los 48 items de la libreria. |
 
 ## Puesta en marcha
 
@@ -70,7 +70,7 @@ escritura, venga de donde venga.
 ### 5. Cargar los datos que ya existian
 
 Abre `https://<tu-usuario>.github.io/<repo>/importar.html`, entra con tu correo
-y pulsa **Importar los datos**. Escribe las 11 publicaciones y las 37 piezas de
+y pulsa **Importar los datos**. Escribe las 21 publicaciones y los 48 items de
 la libreria.
 
 **Se hace una sola vez.** Si lo repites, sobrescribe esos documentos con los
