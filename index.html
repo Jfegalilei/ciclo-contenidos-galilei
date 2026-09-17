@@ -557,7 +557,11 @@ window.GALI.listo = new Promise(function(res, rej){
     });
     return out;
   }
-  function normOper(v){ return OPER[String(v || "").toLowerCase()] ? String(v).toLowerCase() : ""; }
+  function normOper(v, tipo){
+    if (tipo !== "reto") return "";            // solo los retos se ejecutan
+    v = String(v || "").toLowerCase();
+    return OPER[v] ? v : "";
+  }
 
   var COMPANIES = [
     {id:"niku",             name:"Niku"},
@@ -800,7 +804,7 @@ window.GALI.listo = new Promise(function(res, rej){
           week: (w >= 1 && w <= WEEKS_MAX) ? w : 1,
           dow: (dw >= 0 && dw <= 6) ? dw : 0,
           familia: FAMILIAS[b.familia] ? b.familia : "",
-          operatividad: normOper(b.operatividad),
+          operatividad: normOper(b.operatividad, TYPES[b.type] ? b.type : "anuncio"),
           cds: normCds(b.cds),
           img: b.img || "",
           time: b.time || "",
@@ -858,7 +862,7 @@ window.GALI.listo = new Promise(function(res, rej){
           id: d.id,
           type: TYPES[b.type] ? b.type : "reto",
           familia: FAMILIAS[b.familia] ? b.familia : "",
-          operatividad: normOper(b.operatividad),
+          operatividad: normOper(b.operatividad, TYPES[b.type] ? b.type : "reto"),
           cds: normCds(b.cds),
           grupos: parseInt(b.grupos, 10) || 0,
           img: b.img || "",
@@ -1567,7 +1571,8 @@ window.GALI.listo = new Promise(function(res, rej){
      y es el que se ve en la casilla y en la libreria. */
   function bloqueOperCd(pre, datos){
     return '<div class="row">' +
-        '<div class="field" style="flex:0 1 200px"><span class="label">Operatividad *</span>' +
+        '<div class="field" id="' + pre + 'OperCampo" style="flex:0 1 200px"' + (datos.type === "reto" ? "" : " hidden") +
+          '><span class="label">Operatividad *</span>' +
           '<select id="' + pre + 'Oper"><option value=""' + (datos.operatividad ? "" : " selected") + ">Elegir...</option>" +
           OPER_KEYS.map(function(k){
             return '<option value="' + k + '"' + (datos.operatividad === k ? " selected" : "") + ">" + OPER[k].label + "</option>";
@@ -1586,18 +1591,25 @@ window.GALI.listo = new Promise(function(res, rej){
       "</div>";
   }
   // Devuelve {operatividad, cds} y deja los avisos pintados; null si falta algo.
-  function leerOperCd(el, pre){
-    var oper = el.querySelector("#" + pre + "Oper").value;
+  // La operatividad es cosa de los retos: un anuncio o un recordatorio no se ejecuta.
+  function leerOperCd(el, pre, tipo){
+    var esReto = tipo === "reto";
+    var oper = esReto ? el.querySelector("#" + pre + "Oper").value : "";
     var cds = [].slice.call(el.querySelectorAll("#" + pre + "Cds button.on"))
       .sort(function(a, b){ return (+a.dataset.orden || 0) - (+b.dataset.orden || 0); })
       .map(function(b){ return b.dataset.cd; });
-    if (!oper){ toast("Elige la operatividad del reto."); el.querySelector("#" + pre + "Oper").focus(); return null; }
+    if (esReto && !oper){ toast("Elige la operatividad del reto."); el.querySelector("#" + pre + "Oper").focus(); return null; }
     if (!cds.length){ toast("Marca al menos un Core Drive."); return null; }
     return {operatividad: oper, cds: cds.slice(0, MAX_CDS)};
   }
   function cablearOperCd(el, pre, datos){
     var sel = el.querySelector("#" + pre + "Oper"), hint = el.querySelector("#" + pre + "OperHint");
     sel.onchange = function(){ hint.textContent = sel.value ? OPER[sel.value].ayuda : "Cuanto trabajo cuesta ejecutarlo. Hay que elegirla."; };
+
+    // Solo los retos tienen operatividad: el campo aparece y desaparece con el tipo.
+    var tipo = el.querySelector("#" + pre + "Type");
+    var campo = el.querySelector("#" + pre + "OperCampo");
+    tipo.addEventListener("change", function(){ campo.hidden = tipo.value !== "reto"; });
 
     var caja = el.querySelector("#" + pre + "Cds"), pista = el.querySelector("#" + pre + "CdsHint");
     var orden = datos.cds.slice();
@@ -1775,7 +1787,7 @@ window.GALI.listo = new Promise(function(res, rej){
 
   function savePost(el){
     if (!db){ toast("Sin conexion al almacenamiento del calendario."); return; }
-    var extra = leerOperCd(el, "f");
+    var extra = leerOperCd(el, "f", $("fType").value);
     if (!extra) return;
     var body = {
       week: parseInt($("fWeek").value, 10),
@@ -2000,7 +2012,7 @@ window.GALI.listo = new Promise(function(res, rej){
     el.onsubmit = function(ev){
       ev.preventDefault();
       // grupos no se edita aqui: se conserva tal como estaba.
-      var extra = leerOperCd(el, "l");
+      var extra = leerOperCd(el, "l", $("lType").value);
       if (!extra) return;
       var body = {
         type: $("lType").value,
