@@ -17,6 +17,7 @@
   --f-participacion:#0891b2; --f-juego:#16a34a; --f-creativo:#c026d3;
   --f-negocio:#ca8a04; --f-personal:#e11d48; --f-temporada:#4338ca;
   --danger:#a3301f;
+  --eng-ok:#c9ecd6; --eng-medio:#f6e7bd; --eng-bajo:#f3cfca; --eng-ink:#20302a;
   --shadow:0 14px 40px rgba(20,25,26,.16);
   --sans:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --display:"Archivo","Source Sans 3",-apple-system,"Segoe UI",sans-serif;
@@ -32,6 +33,7 @@
     --f-participacion:#22d3ee; --f-juego:#4ade80; --f-creativo:#e879f9;
     --f-negocio:#fbbf24; --f-personal:#fb7185; --f-temporada:#818cf8;
     --danger:#e08070;
+    --eng-ok:#1e5e42; --eng-medio:#5e4c17; --eng-bajo:#5e2b26; --eng-ink:#eaf1ec;
     --shadow:0 14px 40px rgba(0,0,0,.55);
   }
 }
@@ -44,6 +46,7 @@
   --f-participacion:#22d3ee; --f-juego:#4ade80; --f-creativo:#e879f9;
   --f-negocio:#fbbf24; --f-personal:#fb7185; --f-temporada:#818cf8;
   --danger:#e08070;
+  --eng-ok:#1e5e42; --eng-medio:#5e4c17; --eng-bajo:#5e2b26; --eng-ink:#eaf1ec;
   --shadow:0 14px 40px rgba(0,0,0,.55);
 }
 
@@ -237,18 +240,31 @@ button,input,select,textarea{font:inherit;color:inherit}
 .co-tog.spot{box-shadow:0 0 0 2px var(--accent-soft),0 0 0 3px var(--accent)}
 .co-tog:disabled{opacity:.5;cursor:not-allowed}
 
-.stars{display:inline-flex;gap:1px;flex:none;color:var(--ink-2)}
-.stars svg{width:9px;height:9px;display:block;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
-.stars svg.off{fill:none;color:var(--line-strong)}
-.libcard .lrate{display:flex;align-items:center;gap:6px;margin-top:1px}
+.pct{font-family:var(--mono);font-size:10.5px;font-weight:500;font-variant-numeric:tabular-nums;padding:0 4px;border-radius:4px;color:var(--eng-ink);background:var(--eng-bajo)}
+.pct.ok{background:var(--eng-ok)}
+.pct.medio{background:var(--eng-medio)}
+.pct.bajo{background:var(--eng-bajo)}
+.ficha{border-top:1px solid var(--line);padding:9px 12px 2px;display:flex;flex-direction:column;gap:6px}
+.ficha .frow{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ficha .frow .label{flex:0 0 78px}
+.ficha .fnota{font-size:12px;color:var(--muted)}
+.ficha .fcds{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;align-items:baseline}
+.cdtag.principal{border-color:var(--accent);color:var(--accent)}
+.cdpick{display:flex;flex-wrap:wrap;gap:4px}
+.cdpick button{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:3px 7px;border:1px solid var(--line);border-radius:5px;background:var(--surface-2);color:var(--muted);cursor:pointer}
+.cdpick button:hover{border-color:var(--line-strong);color:var(--ink)}
+.cdpick button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.cdpick button.on.principal{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.cdtag,.optag{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap}
+.optag.alta{border-color:var(--eng-bajo);color:var(--eng-bajo)}
+.optag.media{border-color:var(--eng-medio);color:var(--ink-2)}
+.libcard .lrate{display:flex;align-items:center;gap:5px;margin-top:2px;flex-wrap:wrap}
 .libcard .lrate i{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
-.chip .rate{display:flex;align-items:center;gap:5px;margin-top:1px}
-.chip .rate i{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
-.chip .stars.previa{opacity:.55}
+.chip .rate{display:flex;align-items:center;gap:4px;margin-top:2px}
+.chip .rate i{font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--muted);font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .calif{border-top:1px solid var(--line);padding:10px 12px 2px}
 .calif .chead{display:flex;align-items:center;gap:8px}
 .calif .chead .sp{margin-left:auto}
-.calif .stars svg{width:12px;height:12px}
 .calif .cnota{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
 .calif .cprom{font-family:var(--mono);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .calif table{width:100%;border-collapse:collapse;margin-top:7px;font-size:12.5px}
@@ -510,6 +526,39 @@ window.GALI.listo = new Promise(function(res, rej){
   };
   var FAM_KEYS = ["participacion","juego","creativo","negocio","personal","temporada"];
 
+  // Cuanto trabajo cuesta ejecutar el reto. Obligatorio al crear.
+  var OPER = {
+    baja:  {label:"Baja",  ayuda:"Se manda y ya: no hay que revisar nada despues."},
+    media: {label:"Media", ayuda:"Toca revisar respuestas o llevar la cuenta de quien participo."},
+    alta:  {label:"Alta",  ayuda:"Exige premiar, verificar uno por uno o coordinar con el cliente."}
+  };
+  var OPER_KEYS = ["baja","media","alta"];
+
+  // Core Drives del Octalysis. Se eligen hasta 3; el primero es el principal.
+  var CDS = {
+    cd1: {label:"CD1", nombre:"Significado epico y llamado"},
+    cd2: {label:"CD2", nombre:"Desarrollo y logro"},
+    cd3: {label:"CD3", nombre:"Creatividad y retroalimentacion"},
+    cd4: {label:"CD4", nombre:"Propiedad y posesion"},
+    cd5: {label:"CD5", nombre:"Influencia social y pertenencia"},
+    cd6: {label:"CD6", nombre:"Escasez e impaciencia"},
+    cd7: {label:"CD7", nombre:"Imprevisibilidad y curiosidad"},
+    cd8: {label:"CD8", nombre:"Perdida y evitacion"}
+  };
+  var CD_KEYS = ["cd1","cd2","cd3","cd4","cd5","cd6","cd7","cd8"];
+  var MAX_CDS = 3;
+  // Lo que venga de la db: hasta 3 claves validas, sin repetir.
+  function normCds(v){
+    if (!v) return [];
+    var out = [];
+    (Array.isArray(v) ? v : [v]).forEach(function(k){
+      k = String(k || "").toLowerCase();
+      if (CDS[k] && out.indexOf(k) === -1 && out.length < MAX_CDS) out.push(k);
+    });
+    return out;
+  }
+  function normOper(v){ return OPER[String(v || "").toLowerCase()] ? String(v).toLowerCase() : ""; }
+
   var COMPANIES = [
     {id:"niku",             name:"Niku"},
     {id:"power-shakes",     name:"Power Shakes"},
@@ -751,6 +800,8 @@ window.GALI.listo = new Promise(function(res, rej){
           week: (w >= 1 && w <= WEEKS_MAX) ? w : 1,
           dow: (dw >= 0 && dw <= 6) ? dw : 0,
           familia: FAMILIAS[b.familia] ? b.familia : "",
+          operatividad: normOper(b.operatividad),
+          cds: normCds(b.cds),
           img: b.img || "",
           time: b.time || "",
           type: TYPES[b.type] ? b.type : "anuncio",
@@ -807,6 +858,8 @@ window.GALI.listo = new Promise(function(res, rej){
           id: d.id,
           type: TYPES[b.type] ? b.type : "reto",
           familia: FAMILIAS[b.familia] ? b.familia : "",
+          operatividad: normOper(b.operatividad),
+          cds: normCds(b.cds),
           grupos: parseInt(b.grupos, 10) || 0,
           img: b.img || "",
           title: b.title || "",
@@ -864,13 +917,12 @@ window.GALI.listo = new Promise(function(res, rej){
     if (pct >= 30) return 2;
     return pct > 0 ? 1 : 0;
   }
-  var ICON_STAR = '<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/>';
-  function estrellasHtml(n, extra){
-    var h = "";
-    for (var i = 1; i <= 5; i++) h += '<svg viewBox="0 0 24 24"' + (i > n ? ' class="off"' : "") + ">" + ICON_STAR + "</svg>";
-    return '<span class="stars' + (extra ? " " + extra : "") + '" aria-label="' + n + ' de 5 estrellas">' + h + "</span>";
-  }
+  // Semaforo del engagement: mas de 40 verde, mas de 20 amarillo, el resto rojo.
+  function nivelPct(v){ return v > 40 ? "ok" : v > 20 ? "medio" : "bajo"; }
   function pctTxt(v){ return String(Math.round(v * 10) / 10).replace(".", ",") + "%"; }
+  function pctHtml(v, extra){
+    return '<span class="pct ' + nivelPct(v) + (extra ? " " + extra : "") + '">' + pctTxt(v) + "</span>";
+  }
   function fechaCorta(k){ return corta(parseYmd(k)); }
 
   // El registro de envio si cambia con cada vuelta del ciclo.
@@ -980,6 +1032,7 @@ window.GALI.listo = new Promise(function(res, rej){
             : sentCount(p) + "/" + TOTAL_CO;
           var fijo = esFija(p);
           var cal = califDePost(p);
+          var opTit = p.operatividad ? " Operatividad " + OPER[p.operatividad].label.toLowerCase() + "." : "";
           html += '<span class="chip' + (isDone(p) ? " done" : "") + (fijo ? " fija" : "") +
                   '" draggable="' + (fijo ? "false" : "true") + '" data-post="' + p.id +
                   (fijo ? '" title="Fija: ' + esc(etiquetaFija(p.fija)) : "") +
@@ -992,8 +1045,13 @@ window.GALI.listo = new Promise(function(res, rej){
                     '<span class="cnt">' + mark + "</span>" +
                   "</span>" +
                   '<span class="n">' + esc(p.title || TYPES[p.type].label) + "</span>" +
-                  (cal ? '<span class="rate" title="Participacion ' + pctTxt(cal.pct) + " en " + cal.corridas + (cal.corridas === 1 ? " corrida" : " corridas") + '">' +
-                    estrellasHtml(cal.estrellas) + "<i>" + pctTxt(cal.pct) + "</i></span>" : "") +
+                  ((cal || p.cds.length || p.operatividad) ?
+                    '<span class="rate" title="' + (cal ? "Participacion " + pctTxt(cal.pct) + " en " + cal.corridas + (cal.corridas === 1 ? " corrida." : " corridas.") : "") +
+                      esc(opTit) + (p.cds.length ? " " + CDS[p.cds[0]].label + ": " + CDS[p.cds[0]].nombre + "." : "") + '">' +
+                    (cal ? pctHtml(cal.pct) : "") +
+                    (p.cds.length ? '<span class="cdtag">' + CDS[p.cds[0]].label + "</span>" : "") +
+                    (p.operatividad === "alta" ? '<span class="optag alta" title="Operatividad alta: ' + esc(OPER.alta.ayuda) + '">op alta</span>' : "") +
+                    "</span>" : "") +
                   "</span>";
         });
         if (items.length > MAX_CHIPS){
@@ -1185,7 +1243,7 @@ window.GALI.listo = new Promise(function(res, rej){
     edit.textContent = "Editar";
     edit.title = "Cambia esta publicacion en todas las vueltas del ciclo";
     edit.disabled = !dbReady;
-    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, img:p.img, title:p.title, copy:p.copy, fija:p.fija || null}); };
+    edit.onclick = function(){ startEditor({id:p.id, week:p.week, dow:p.dow, time:p.time, type:p.type, familia:p.familia, operatividad:p.operatividad, cds:p.cds.slice(), img:p.img, title:p.title, copy:p.copy, fija:p.fija || null}); };
     acts.appendChild(edit);
 
     acts.appendChild(botonBorrar(
@@ -1194,6 +1252,8 @@ window.GALI.listo = new Promise(function(res, rej){
       function(){ removePost(p); }
     ));
     el.appendChild(acts);
+
+    if (p.operatividad || p.cds.length) el.appendChild(fichaCard(p));
 
     var cal = califDePost(p);
     if (cal) el.appendChild(califCard(cal));
@@ -1227,6 +1287,26 @@ window.GALI.listo = new Promise(function(res, rej){
     return el;
   }
 
+  // Operatividad y core drives: el principal primero, con su nombre.
+  function fichaCard(p){
+    var box = document.createElement("div");
+    box.className = "ficha";
+    box.innerHTML =
+      (p.operatividad
+        ? '<div class="frow"><span class="label">Operatividad</span>' +
+          '<span class="optag ' + p.operatividad + '">' + esc(OPER[p.operatividad].label) + "</span>" +
+          '<span class="fnota">' + esc(OPER[p.operatividad].ayuda) + "</span></div>"
+        : "") +
+      (p.cds.length
+        ? '<div class="frow"><span class="label">Core drives</span><div class="fcds">' +
+          p.cds.map(function(k, i){
+            return '<span class="cdtag' + (i === 0 ? " principal" : "") + '">' + CDS[k].label + "</span>" +
+                   '<span class="fnota">' + esc(CDS[k].nombre) + (i === 0 ? " (principal)" : "") + "</span>";
+          }).join("") + "</div></div>"
+        : "");
+    return box;
+  }
+
   // Participacion por grupo: quien escribio o reacciono en las 24 h
   // siguientes al mensaje, contra los miembros del grupo.
   function califCard(cal){
@@ -1236,15 +1316,15 @@ window.GALI.listo = new Promise(function(res, rej){
     var box = document.createElement("div");
     box.className = "calif";
     box.innerHTML =
-      '<div class="chead"><span class="label">Participacion</span>' + estrellasHtml(cal.estrellas) +
-        '<span class="sp"></span><span class="cprom">' + pctTxt(cal.pct) + " en " + cal.corridas +
+      '<div class="chead"><span class="label">Participacion</span>' + pctHtml(cal.pct) +
+        '<span class="sp"></span><span class="cprom">promedio de ' + cal.corridas +
         (cal.corridas === 1 ? " corrida" : " corridas") + "</span></div>" +
       '<div class="cnota">Ultima vez: ' + esc(fechaCorta(cal.ultima.fecha)) +
         " / " + filas.length + (filas.length === 1 ? " grupo medido" : " grupos medidos") + "</div>" +
       "<table>" + filas.map(function(g){
         return "<tr><td>" + esc(coName(g.companyId) || g.grupo) + "</td>" +
-               '<td class="n">' + g.participaron + "/" + g.miembros + " / " + pctTxt(g.pct) + "</td>" +
-               '<td class="s">' + estrellasHtml(g.estrellas) + "</td></tr>";
+               '<td class="n">' + g.participaron + "/" + g.miembros + "</td>" +
+               '<td class="s">' + pctHtml(g.pct) + "</td></tr>";
       }).join("") + "</table>";
     return box;
   }
@@ -1481,9 +1561,72 @@ window.GALI.listo = new Promise(function(res, rej){
     return wrap;
   }
 
+  /* ---------- operatividad y core drives ----------
+     Los dos editores usan el mismo bloque: operatividad obligatoria y
+     hasta 3 core drives, donde el primero que se marca es el principal
+     y es el que se ve en la casilla y en la libreria. */
+  function bloqueOperCd(pre, datos){
+    return '<div class="row">' +
+        '<div class="field" style="flex:0 1 200px"><span class="label">Operatividad *</span>' +
+          '<select id="' + pre + 'Oper"><option value=""' + (datos.operatividad ? "" : " selected") + ">Elegir...</option>" +
+          OPER_KEYS.map(function(k){
+            return '<option value="' + k + '"' + (datos.operatividad === k ? " selected" : "") + ">" + OPER[k].label + "</option>";
+          }).join("") + "</select>" +
+          '<span class="hint" id="' + pre + 'OperHint">' +
+            (datos.operatividad ? esc(OPER[datos.operatividad].ayuda) : "Cuanto trabajo cuesta ejecutarlo. Hay que elegirla.") + "</span></div>" +
+        '<div class="field"><span class="label">Core Drives (hasta ' + MAX_CDS + ") *</span>" +
+          '<div class="cdpick" id="' + pre + 'Cds">' +
+            CD_KEYS.map(function(k){
+              var i = datos.cds.indexOf(k);
+              return '<button type="button" data-cd="' + k + '" class="' + (i === 0 ? "on principal" : i > 0 ? "on" : "") +
+                     '" title="' + esc(CDS[k].nombre) + '">' + CDS[k].label + "</button>";
+            }).join("") +
+          "</div>" +
+          '<span class="hint" id="' + pre + 'CdsHint"></span></div>' +
+      "</div>";
+  }
+  // Devuelve {operatividad, cds} y deja los avisos pintados; null si falta algo.
+  function leerOperCd(el, pre){
+    var oper = el.querySelector("#" + pre + "Oper").value;
+    var cds = [].slice.call(el.querySelectorAll("#" + pre + "Cds button.on"))
+      .sort(function(a, b){ return (+a.dataset.orden || 0) - (+b.dataset.orden || 0); })
+      .map(function(b){ return b.dataset.cd; });
+    if (!oper){ toast("Elige la operatividad del reto."); el.querySelector("#" + pre + "Oper").focus(); return null; }
+    if (!cds.length){ toast("Marca al menos un Core Drive."); return null; }
+    return {operatividad: oper, cds: cds.slice(0, MAX_CDS)};
+  }
+  function cablearOperCd(el, pre, datos){
+    var sel = el.querySelector("#" + pre + "Oper"), hint = el.querySelector("#" + pre + "OperHint");
+    sel.onchange = function(){ hint.textContent = sel.value ? OPER[sel.value].ayuda : "Cuanto trabajo cuesta ejecutarlo. Hay que elegirla."; };
+
+    var caja = el.querySelector("#" + pre + "Cds"), pista = el.querySelector("#" + pre + "CdsHint");
+    var orden = datos.cds.slice();
+    function pintar(){
+      [].slice.call(caja.children).forEach(function(b){
+        var i = orden.indexOf(b.dataset.cd);
+        b.className = i === 0 ? "on principal" : i > 0 ? "on" : "";
+        b.dataset.orden = i;
+      });
+      pista.innerHTML = orden.length
+        ? "Principal: <b>" + esc(CDS[orden[0]].label + " " + CDS[orden[0]].nombre) + "</b>" +
+          (orden.length > 1 ? ". Tambien: " + orden.slice(1).map(function(k){ return esc(CDS[k].nombre); }).join(", ") : "")
+        : "El primero que marques es el principal: es el que se ve en la casilla.";
+    }
+    caja.onclick = function(ev){
+      var b = ev.target.closest("button[data-cd]");
+      if (!b) return;
+      var k = b.dataset.cd, i = orden.indexOf(k);
+      if (i >= 0) orden.splice(i, 1);
+      else if (orden.length >= MAX_CDS) toast("Maximo " + MAX_CDS + " core drives por pieza.");
+      else orden.push(k);
+      pintar();
+    };
+    pintar();
+  }
+
   /* ---------- editor ---------- */
   function newDraft(w, dw){
-    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", img:"", title:"", copy:"", fija:null};
+    return {id:null, week:w, dow:dw, time:"09:00", type:"reto", familia:"", operatividad:"", cds:[], img:"", title:"", copy:"", fija:null};
   }
   function startEditor(draft){
     editing = draft;
@@ -1522,6 +1665,7 @@ window.GALI.listo = new Promise(function(res, rej){
           FAM_KEYS.map(function(k){ return '<option value="' + k + '"' + (editing.familia === k ? " selected" : "") + ">" + FAMILIAS[k].label + "</option>"; }).join("") +
         "</select></div>" +
       "</div>" +
+      bloqueOperCd("f", editing) +
       bloqueFijar() +
       '<div class="field"><span class="label">Titulo</span><input id="fTitle" maxlength="70" placeholder="Reto de la semana" value="' + esc(editing.title) + '"></div>' +
       '<div class="field"><span class="label">Copy para WhatsApp</span><textarea id="fCopy" placeholder="El mensaje exacto que se pega en el grupo.">' + esc(editing.copy) + "</textarea>" +
@@ -1532,8 +1676,9 @@ window.GALI.listo = new Promise(function(res, rej){
     // La imagen se inserta antes de la fila de botones.
     el.insertBefore(campoImagen(editing, "img"), el.querySelector(".editor-acts"));
 
-    el.onsubmit = function(ev){ ev.preventDefault(); savePost(); };
+    el.onsubmit = function(ev){ ev.preventDefault(); savePost(el); };
     el.querySelector("#fCancel").onclick = function(){ editing = null; renderDrawer(); };
+    cablearOperCd(el, "f", editing);
     cablearFijar(el);
     return el;
   }
@@ -1628,14 +1773,18 @@ window.GALI.listo = new Promise(function(res, rej){
     pintar();
   }
 
-  function savePost(){
+  function savePost(el){
     if (!db){ toast("Sin conexion al almacenamiento del calendario."); return; }
+    var extra = leerOperCd(el, "f");
+    if (!extra) return;
     var body = {
       week: parseInt($("fWeek").value, 10),
       dow: parseInt($("fDow").value, 10),
       time: $("fTime").value || "",
       type: $("fType").value,
       familia: $("fFam").value,
+      operatividad: extra.operatividad,
+      cds: extra.cds,
       img: editing.img || "",
       title: $("fTitle").value.trim(),
       copy: $("fCopy").value,
@@ -1759,9 +1908,13 @@ window.GALI.listo = new Promise(function(res, rej){
                      "<h4>" + esc(it.title || "Sin titulo") + "</h4>" +
                      (function(){
                        var c = it.type === "reto" ? califItem(it.id) : null;
-                       return c ? '<div class="lrate" title="Participacion promedio en los grupos">' +
-                         estrellasHtml(c.estrellas) + "<i>" + pctTxt(c.pct) + " / " + c.corridas +
-                         (c.corridas === 1 ? " corrida" : " corridas") + "</i></div>" : "";
+                       if (!c && !it.cds.length && !it.operatividad) return "";
+                       return '<div class="lrate">' +
+                         (c ? '<span title="Participacion promedio en ' + c.corridas + (c.corridas === 1 ? " corrida" : " corridas") + '">' + pctHtml(c.pct) + "</span>" : "") +
+                         (it.cds.length ? '<span class="cdtag" title="' + esc(CDS[it.cds[0]].nombre) + '">' + CDS[it.cds[0]].label + "</span>" : "") +
+                         (it.operatividad ? '<span class="optag ' + it.operatividad + '" title="' + esc(OPER[it.operatividad].ayuda) + '">op ' + esc(OPER[it.operatividad].label) + "</span>" : "") +
+                         (c ? "<i>" + c.corridas + (c.corridas === 1 ? " corrida" : " corridas") + "</i>" : "") +
+                         "</div>";
                      })() +
                      (it.img ? '<span class="thumb"><img src="' + it.img + '" alt=""></span>' : "") +
                      "<p>" + esc(it.copy) + "</p>";
@@ -1778,7 +1931,7 @@ window.GALI.listo = new Promise(function(res, rej){
 
       var ed = document.createElement("button");
       ed.textContent = "Editar";
-      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, grupos:it.grupos, img:it.img, title:it.title, copy:it.copy}; renderLib(); };
+      ed.onclick = function(){ libEdit = {id:it.id, type:it.type, familia:it.familia, operatividad:it.operatividad, cds:it.cds.slice(), grupos:it.grupos, img:it.img, title:it.title, copy:it.copy}; renderLib(); };
       acts.appendChild(ed);
 
       acts.appendChild(botonBorrar(
@@ -1838,6 +1991,7 @@ window.GALI.listo = new Promise(function(res, rej){
           TYPE_KEYS.map(function(k){ return '<option value="' + k + '"' + (libEdit.type === k ? " selected" : "") + ">" + TYPES[k].label + "</option>"; }).join("") +
         "</select></div>" +
       "</div>" +
+      bloqueOperCd("l", libEdit) +
       '<div class="field"><span class="label">Titulo</span><input id="lTitle" maxlength="70" value="' + esc(libEdit.title) + '"></div>' +
       '<div class="field"><span class="label">Copy</span><textarea id="lCopy">' + esc(libEdit.copy) + "</textarea></div>" +
       '<div class="editor-acts"><button class="btn btn-primary" type="submit">Guardar</button>' +
@@ -1846,9 +2000,13 @@ window.GALI.listo = new Promise(function(res, rej){
     el.onsubmit = function(ev){
       ev.preventDefault();
       // grupos no se edita aqui: se conserva tal como estaba.
+      var extra = leerOperCd(el, "l");
+      if (!extra) return;
       var body = {
         type: $("lType").value,
         familia: $("lFam").value,
+        operatividad: extra.operatividad,
+        cds: extra.cds,
         grupos: libEdit.grupos || 0,
         img: libEdit.img || "",
         title: $("lTitle").value.trim(),
@@ -1864,6 +2022,7 @@ window.GALI.listo = new Promise(function(res, rej){
     };
     el.insertBefore(campoImagen(libEdit, "img"), el.querySelector(".editor-acts"));
 
+    cablearOperCd(el, "l", libEdit);
     el.querySelector("#lCancel").onclick = cerrarLibModal;
     return el;
   }
@@ -1873,7 +2032,7 @@ window.GALI.listo = new Promise(function(res, rej){
     var it = null;
     for (var i = 0; i < lib.length; i++){ if (lib[i].id === id){ it = lib[i]; break; } }
     if (!it){ toast("Esa pieza ya no esta en la libreria."); return; }
-    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", img:it.img || "", title:it.title, copy:it.copy, fija:null};
+    var body = {week:w, dow:dw, time:"09:00", type:it.type, familia:it.familia || "", operatividad:it.operatividad || "", cds:it.cds || [], img:it.img || "", title:it.title, copy:it.copy, fija:null};
     write(function(){ return db.collection("plantilla").doc().set(body); })
       .then(function(){ toast('"' + (it.title || TYPES[it.type].label) + '" programada en semana ' + w + ", " + DOW[dw] + "."); }, function(){});
   }
@@ -1892,7 +2051,7 @@ window.GALI.listo = new Promise(function(res, rej){
   }
   $("libNew").onclick = function(){
     if (!dbReady){ toast("Sin conexion al almacenamiento del calendario."); return; }
-    libEdit = {id:null, type:"reto", familia:"", grupos:0, img:"", title:"", copy:""};
+    libEdit = {id:null, type:"reto", familia:"", operatividad:"", cds:[], grupos:0, img:"", title:"", copy:""};
     renderLib();
     var t = $("lTitle"); if (t) t.focus();
   };
