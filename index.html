@@ -157,7 +157,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .day.over .gap{border-top-color:var(--accent)}
 .gap{margin-top:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px dashed var(--line-strong);padding-top:5px}
 
-.chip{display:flex;flex-direction:column;gap:1px;padding:4px 6px 5px 10px;border-radius:4px;background:var(--surface-2);border-left:5px solid var(--chipc,var(--line-strong));box-shadow:inset 2px 0 0 var(--famc,transparent);line-height:1.3;overflow:hidden}
+.chip{display:flex;flex-direction:column;gap:1px;padding:4px 6px 7px 8px;border-radius:4px;background:var(--surface-2);border-left:5px solid var(--chipc,var(--line-strong));box-shadow:inset 0 -3px 0 var(--famc,transparent);line-height:1.3;overflow:hidden}
 .day.weekend .chip{background:var(--surface)}
 .chip .meta{display:flex;align-items:baseline;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
 .chip .t{flex:none}
@@ -191,7 +191,7 @@ button,input,select,textarea{font:inherit;color:inherit}
    termina en su propia grilla de envio. */
 .dbody{flex:1;overflow-y:auto;padding:16px 16px 28px;display:flex;flex-direction:column;gap:18px;background:var(--surface-2)}
 
-.post{border:1px solid var(--line-strong);border-top:5px solid var(--chipc,var(--line-strong));border-radius:10px;background:var(--surface);overflow:hidden;box-shadow:inset 0 2px 0 var(--famc,transparent),0 1px 3px rgba(0,0,0,.07)}
+.post{border:1px solid var(--line-strong);border-top:5px solid var(--chipc,var(--line-strong));border-radius:10px;background:var(--surface);overflow:hidden;box-shadow:inset 0 -4px 0 var(--famc,transparent),0 1px 3px rgba(0,0,0,.07)}
 .post-top{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line);background:var(--surface-2)}
 .post-top .ord{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
 .tag{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;padding:2px 6px;border-radius:4px;color:var(--surface);background:var(--chipc,var(--muted));font-weight:500}
@@ -225,7 +225,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 .sendhead{display:flex;align-items:center;gap:8px;padding:10px 12px 0;border-top:1px solid var(--line)}
 .sendhead .sp{margin-left:auto}
-.sendgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:8px 12px 12px}
+.sendgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:8px 12px 16px}
 .co-tog{display:flex;align-items:center;gap:7px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);cursor:pointer;font-size:12.5px;text-align:left;overflow:hidden}
 .co-tog:hover{border-color:var(--line-strong)}
 .co-tog .box{width:13px;height:13px;border:1.5px solid var(--line-strong);border-radius:4px;display:grid;place-items:center;flex:none}
@@ -236,6 +236,23 @@ button,input,select,textarea{font:inherit;color:inherit}
 .co-tog.on .box svg{opacity:1}
 .co-tog.spot{box-shadow:0 0 0 2px var(--accent-soft),0 0 0 3px var(--accent)}
 .co-tog:disabled{opacity:.5;cursor:not-allowed}
+
+.stars{display:inline-flex;gap:1px;flex:none;color:var(--ink-2)}
+.stars svg{width:9px;height:9px;display:block;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.stars svg.off{fill:none;color:var(--line-strong)}
+.chip .rate{display:flex;align-items:center;gap:5px;margin-top:1px}
+.chip .rate i{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip .stars.previa{opacity:.55}
+.calif{border-top:1px solid var(--line);padding:10px 12px 2px}
+.calif .chead{display:flex;align-items:center;gap:8px}
+.calif .chead .sp{margin-left:auto}
+.calif .stars svg{width:12px;height:12px}
+.calif .cnota{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+.calif .cprom{font-family:var(--mono);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.calif table{width:100%;border-collapse:collapse;margin-top:7px;font-size:12.5px}
+.calif td{padding:3px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.calif td.n{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;padding-right:10px;white-space:nowrap}
+.calif td.s{width:1%;white-space:nowrap}
 
 /* Editor de la libreria: modal centrado, para ver el copy completo */
 .mwrap{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,14,13,.45)}
@@ -515,7 +532,8 @@ window.GALI.listo = new Promise(function(res, rej){
   var DOW = ["lunes","martes","miercoles","jueves","viernes","sabado","domingo"];
   var MAX_CHIPS = 4;
 
-  var db = null, dbReady = false, unsubTpl = null, unsubMarks = null, unsubLib = null, unsubCfg = null;
+  var db = null, dbReady = false, unsubTpl = null, unsubMarks = null, unsubLib = null, unsubCfg = null, unsubCalif = null;
+  var calif = {};   // postId -> {corridas: {AAAA-MM-DD: {pct, estrellas, grupos}}}, lo escribe Chatmanager
   var tpl = [], marks = {}, cycle = null, selected = null, editing = null, filterCo = "";
   var lib = [], libQ = "", libType = "", libFam = "", libEdit = null;
   var toastTimer = null;
@@ -703,6 +721,7 @@ window.GALI.listo = new Promise(function(res, rej){
     if (unsubMarks){ try { unsubMarks(); } catch(e){} unsubMarks = null; }
     if (unsubLib){ try { unsubLib(); } catch(e){} unsubLib = null; }
     if (unsubCfg){ try { unsubCfg(); } catch(e){} unsubCfg = null; }
+    if (unsubCalif){ try { unsubCalif(); } catch(e){} unsubCalif = null; }
     render();
   }
   function write(fn){
@@ -797,6 +816,39 @@ window.GALI.listo = new Promise(function(res, rej){
       notice(describe(e), "err");
     });
   }
+
+  // Participacion de cada reto: la calcula Chatmanager leyendo los grupos.
+  // Solo lectura; si no hay datos o permiso, las estrellas no salen.
+  function subscribeCalif(){
+    unsubCalif = db.collection("calificaciones").onSnapshot(function(snap){
+      calif = {};
+      snap.docs.forEach(function(d){
+        var b = d.data() || {};
+        if (b.corridas && typeof b.corridas === "object") calif[d.id] = b.corridas;
+      });
+      render();
+    }, function(){ calif = {}; });
+  }
+
+  // La corrida de esa fecha; si el reto aun no sale en esta vuelta, la
+  // ultima vez que se uso antes (previa = true).
+  function califDe(p, fecha){
+    var c = calif[p.id];
+    if (!c || p.type !== "reto") return null;
+    if (c[fecha]) return {fecha: fecha, previa: false, datos: c[fecha]};
+    var antes = Object.keys(c).filter(function(k){ return k < fecha; }).sort();
+    if (!antes.length) return null;
+    var k = antes[antes.length - 1];
+    return {fecha: k, previa: true, datos: c[k]};
+  }
+  var ICON_STAR = '<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/>';
+  function estrellasHtml(n, extra){
+    var h = "";
+    for (var i = 1; i <= 5; i++) h += '<svg viewBox="0 0 24 24"' + (i > n ? ' class="off"' : "") + ">" + ICON_STAR + "</svg>";
+    return '<span class="stars' + (extra ? " " + extra : "") + '" aria-label="' + n + ' de 5 estrellas">' + h + "</span>";
+  }
+  function pctTxt(v){ return String(Math.round(v * 10) / 10).replace(".", ",") + "%"; }
+  function fechaCorta(k){ return corta(parseYmd(k)); }
 
   // El registro de envio si cambia con cada vuelta del ciclo.
   function subscribeMarks(){
@@ -904,6 +956,7 @@ window.GALI.listo = new Promise(function(res, rej){
             ? (sentOf(p.id)[filterCo] ? "enviado" : "pendiente")
             : sentCount(p) + "/" + TOTAL_CO;
           var fijo = esFija(p);
+          var cal = califDe(p, fs);
           html += '<span class="chip' + (isDone(p) ? " done" : "") + (fijo ? " fija" : "") +
                   '" draggable="' + (fijo ? "false" : "true") + '" data-post="' + p.id +
                   (fijo ? '" title="Fija: ' + esc(etiquetaFija(p.fija)) : "") +
@@ -915,7 +968,10 @@ window.GALI.listo = new Promise(function(res, rej){
                     (p.img ? '<span class="pic">' + ICON_PIC + "</span>" : "") +
                     '<span class="cnt">' + mark + "</span>" +
                   "</span>" +
-                  '<span class="n">' + esc(p.title || TYPES[p.type].label) + "</span></span>";
+                  '<span class="n">' + esc(p.title || TYPES[p.type].label) + "</span>" +
+                  (cal ? '<span class="rate" title="Participacion ' + pctTxt(cal.datos.pct) + (cal.previa ? ", la ultima vez que se uso (" + fechaCorta(cal.fecha) + ")" : "") + '">' +
+                    estrellasHtml(cal.datos.estrellas, cal.previa ? "previa" : "") + "<i>" + pctTxt(cal.datos.pct) + "</i></span>" : "") +
+                  "</span>";
         });
         if (items.length > MAX_CHIPS){
           html += '<span class="more">+' + (items.length - MAX_CHIPS) + " mas</span>";
@@ -1116,6 +1172,9 @@ window.GALI.listo = new Promise(function(res, rej){
     ));
     el.appendChild(acts);
 
+    var cal = califDe(p, ymd(fechaDe(selected.w, selected.d)));
+    if (cal) el.appendChild(califCard(cal));
+
     /* --- casillas de envio de ESTA vuelta --- */
     var sh = document.createElement("div");
     sh.className = "sendhead";
@@ -1143,6 +1202,27 @@ window.GALI.listo = new Promise(function(res, rej){
     el.appendChild(grid);
 
     return el;
+  }
+
+  // Participacion por grupo: quien escribio o reacciono en las 24 h
+  // siguientes, contra los miembros del grupo.
+  function califCard(cal){
+    var d = cal.datos, grupos = d.grupos || {};
+    var filas = Object.keys(grupos).map(function(k){ return grupos[k]; })
+      .sort(function(a, b){ return b.pct - a.pct; });
+    var box = document.createElement("div");
+    box.className = "calif";
+    box.innerHTML =
+      '<div class="chead"><span class="label">Participacion</span>' + estrellasHtml(d.estrellas) +
+        '<span class="sp"></span><span class="cprom">' + pctTxt(d.pct) + " promedio</span></div>" +
+      '<div class="cnota">' + (cal.previa ? "La ultima vez que se uso, el " : "Corrida del ") + esc(fechaCorta(cal.fecha)) +
+        " / " + filas.length + (filas.length === 1 ? " grupo medido" : " grupos medidos") + "</div>" +
+      "<table>" + filas.map(function(g){
+        return "<tr><td>" + esc(coName(g.companyId) || g.grupo) + "</td>" +
+               '<td class="n">' + g.participaron + "/" + g.miembros + " / " + pctTxt(g.pct) + "</td>" +
+               '<td class="s">' + estrellasHtml(g.estrellas) + "</td></tr>";
+      }).join("") + "</table>";
+    return box;
   }
 
   function stamp(iso){
@@ -1963,6 +2043,7 @@ window.GALI.listo = new Promise(function(res, rej){
     subscribeTpl();
     subscribeMarks();
     subscribeLib();
+    subscribeCalif();
   }, function(e){
     notice((e && e.message) || "No se pudo abrir el calendario.", "err");
   });

@@ -40,6 +40,47 @@ service cloud.firestore {
       allow read, write: if esDeGalilei();
     }
 
+    // Estrellas de participacion de cada reto. Las escribe Chatmanager con la
+    // cuenta de servicio (que no pasa por estas reglas); la pagina solo lee.
+    match /calificaciones/{id} {
+      allow read: if esDeGalilei();
+      allow write: if false;
+    }
+
+    // ---- Generador de premios semanales (repo premios-semanales-galilei).
+    // Comparte proyecto con el calendario. Por ahora SIN login: cualquiera con
+    // el enlace lee y edita. No se puede borrar, solo se aceptan los campos del
+    // catalogo y el recorte (WebP en data URI) tiene tope de tamano.
+    match /premios/{id} {
+      allow read: if true;
+      allow create, update: if id.matches('^[a-z0-9-]{1,48}$')
+        && request.resource.data.keys().hasOnly(['etiqueta', 'desglose', 'unidadMonto',
+             'valor', 'categoria', 'alias', 'prioridad', 'ignorar', 'imagen'])
+        && (!('imagen' in request.resource.data)
+            || (request.resource.data.imagen is string
+                && request.resource.data.imagen.size() < 950000));
+      allow delete: if false;
+    }
+
+    // Posiciones del personaje colocadas a mano: un solo documento.
+    match /premiosConfig/{clave} {
+      allow read: if true;
+      allow write: if clave == 'posiciones'
+        && request.resource.data.keys().hasOnly(['posiciones']);
+    }
+
+    // Logos de los clientes (ya en blanco), uno por compania. Sin borrar: para
+    // quitar un logo se deja `logo` vacio.
+    match /clientes/{id} {
+      allow read: if true;
+      allow create, update: if id.matches('^[a-z0-9-]{1,48}$')
+        && request.resource.data.keys().hasOnly(['nombre', 'logo'])
+        && (!('logo' in request.resource.data)
+            || (request.resource.data.logo is string
+                && request.resource.data.logo.size() < 300000));
+      allow delete: if false;
+    }
+
     // Todo lo demas queda cerrado.
     match /{document=**} {
       allow read, write: if false;

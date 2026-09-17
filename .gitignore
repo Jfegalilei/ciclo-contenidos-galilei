@@ -5,3 +5,8 @@ Thumbs.db
 # Contenido interno: vive en Firestore, no en el repositorio.
 datos-iniciales.json
 importar.html
+web-actual.json
+
+# Credencial de la cuenta de servicio: NUNCA va al repositorio.
+*firebase-adminsdk*.json
+serviceAccount*.json

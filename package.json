@@ -1,0 +1,23 @@
+{
+  "name": "ciclo-contenidos-web",
+  "version": "1.0.0",
+  "description": "El calendario de contenidos de WhatsApp: un ciclo de 4 semanas que se repite sin\r parar, igual para las 12 companias. Es la misma herramienta que vivia como\r artifact de Claude, movida a una pagina propia para que **todo el equipo pueda\r abrirla y editarla**, con los datos compartidos y en vivo.",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jfegalilei/ciclo-contenidos-galilei.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jfegalilei/ciclo-contenidos-galilei/issues"
+  },
+  "homepage": "https://github.com/Jfegalilei/ciclo-contenidos-galilei#readme",
+  "dependencies": {
+    "firebase-admin": "^14.3.0"
+  }
+}
