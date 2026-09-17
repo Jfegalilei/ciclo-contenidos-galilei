@@ -240,6 +240,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .stars{display:inline-flex;gap:1px;flex:none;color:var(--ink-2)}
 .stars svg{width:9px;height:9px;display:block;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
 .stars svg.off{fill:none;color:var(--line-strong)}
+.libcard .lrate{display:flex;align-items:center;gap:6px;margin-top:1px}
+.libcard .lrate i{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
 .chip .rate{display:flex;align-items:center;gap:5px;margin-top:1px}
 .chip .rate i{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
 .chip .stars.previa{opacity:.55}
@@ -533,7 +535,7 @@ window.GALI.listo = new Promise(function(res, rej){
   var MAX_CHIPS = 4;
 
   var db = null, dbReady = false, unsubTpl = null, unsubMarks = null, unsubLib = null, unsubCfg = null, unsubCalif = null;
-  var calif = {};   // postId -> {corridas: {AAAA-MM-DD: {pct, estrellas, grupos}}}, lo escribe Chatmanager
+  var calif = {};   // idDeLaLibreria -> {corridas: {AAAA-MM-DD: {pct, estrellas, grupos}}}, lo escribe Chatmanager
   var tpl = [], marks = {}, cycle = null, selected = null, editing = null, filterCo = "";
   var lib = [], libQ = "", libType = "", libFam = "", libEdit = null;
   var toastTimer = null;
@@ -817,8 +819,10 @@ window.GALI.listo = new Promise(function(res, rej){
     });
   }
 
-  // Participacion de cada reto: la calcula Chatmanager leyendo los grupos.
-  // Solo lectura; si no hay datos o permiso, las estrellas no salen.
+  /* Participacion de cada reto: la calcula Chatmanager mirando los grupos,
+     no el calendario. Reconoce que reto de la LIBRERIA se lanzo, mida el
+     dia que lo hayan mandado, y le deja la calificacion a ese item. Aqui
+     solo se lee; si no hay datos o permiso, las estrellas no salen. */
   function subscribeCalif(){
     unsubCalif = db.collection("calificaciones").onSnapshot(function(snap){
       calif = {};
@@ -830,16 +834,35 @@ window.GALI.listo = new Promise(function(res, rej){
     }, function(){ calif = {}; });
   }
 
-  // La corrida de esa fecha; si el reto aun no sale en esta vuelta, la
-  // ultima vez que se uso antes (previa = true).
-  function califDe(p, fecha){
-    var c = calif[p.id];
-    if (!c || p.type !== "reto") return null;
-    if (c[fecha]) return {fecha: fecha, previa: false, datos: c[fecha]};
-    var antes = Object.keys(c).filter(function(k){ return k < fecha; }).sort();
-    if (!antes.length) return null;
-    var k = antes[antes.length - 1];
-    return {fecha: k, previa: true, datos: c[k]};
+  // La calificacion de un item de la libreria: el promedio de todas las
+  // veces que se ha corrido, y el detalle de la ultima.
+  function califItem(libId){
+    var c = calif[libId];
+    if (!c) return null;
+    var fechas = Object.keys(c).sort();
+    if (!fechas.length) return null;
+    var pcts = fechas.map(function(f){ return c[f].pct; });
+    var pct = Math.round(pcts.reduce(function(a, b){ return a + b; }, 0) / pcts.length * 10) / 10;
+    return {pct: pct, estrellas: estrellasDe(pct), corridas: fechas.length,
+            ultima: {fecha: fechas[fechas.length - 1], datos: c[fechas[fechas.length - 1]]}};
+  }
+  // Un reto del ciclo es una copia de la libreria: se reconoce por el titulo.
+  function normTit(t){ return String(t || "").trim().toLowerCase(); }
+  function califDePost(p){
+    if (p.type !== "reto") return null;
+    for (var i = 0; i < lib.length; i++){
+      if (normTit(lib[i].title) === normTit(p.title)) return califItem(lib[i].id);
+    }
+    return null;
+  }
+  // La misma escala que usa Chatmanager, para lo que se calcula aqui.
+  function estrellasDe(pct){
+    if (pct == null) return null;
+    if (pct >= 90) return 5;
+    if (pct >= 70) return 4;
+    if (pct >= 50) return 3;
+    if (pct >= 30) return 2;
+    return pct > 0 ? 1 : 0;
   }
   var ICON_STAR = '<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/>';
   function estrellasHtml(n, extra){
@@ -956,7 +979,7 @@ window.GALI.listo = new Promise(function(res, rej){
             ? (sentOf(p.id)[filterCo] ? "enviado" : "pendiente")
             : sentCount(p) + "/" + TOTAL_CO;
           var fijo = esFija(p);
-          var cal = califDe(p, fs);
+          var cal = califDePost(p);
           html += '<span class="chip' + (isDone(p) ? " done" : "") + (fijo ? " fija" : "") +
                   '" draggable="' + (fijo ? "false" : "true") + '" data-post="' + p.id +
                   (fijo ? '" title="Fija: ' + esc(etiquetaFija(p.fija)) : "") +
@@ -969,8 +992,8 @@ window.GALI.listo = new Promise(function(res, rej){
                     '<span class="cnt">' + mark + "</span>" +
                   "</span>" +
                   '<span class="n">' + esc(p.title || TYPES[p.type].label) + "</span>" +
-                  (cal ? '<span class="rate" title="Participacion ' + pctTxt(cal.datos.pct) + (cal.previa ? ", la ultima vez que se uso (" + fechaCorta(cal.fecha) + ")" : "") + '">' +
-                    estrellasHtml(cal.datos.estrellas, cal.previa ? "previa" : "") + "<i>" + pctTxt(cal.datos.pct) + "</i></span>" : "") +
+                  (cal ? '<span class="rate" title="Participacion ' + pctTxt(cal.pct) + " en " + cal.corridas + (cal.corridas === 1 ? " corrida" : " corridas") + '">' +
+                    estrellasHtml(cal.estrellas) + "<i>" + pctTxt(cal.pct) + "</i></span>" : "") +
                   "</span>";
         });
         if (items.length > MAX_CHIPS){
@@ -1172,7 +1195,7 @@ window.GALI.listo = new Promise(function(res, rej){
     ));
     el.appendChild(acts);
 
-    var cal = califDe(p, ymd(fechaDe(selected.w, selected.d)));
+    var cal = califDePost(p);
     if (cal) el.appendChild(califCard(cal));
 
     /* --- casillas de envio de ESTA vuelta --- */
@@ -1205,17 +1228,18 @@ window.GALI.listo = new Promise(function(res, rej){
   }
 
   // Participacion por grupo: quien escribio o reacciono en las 24 h
-  // siguientes, contra los miembros del grupo.
+  // siguientes al mensaje, contra los miembros del grupo.
   function califCard(cal){
-    var d = cal.datos, grupos = d.grupos || {};
+    var d = cal.ultima.datos, grupos = d.grupos || {};
     var filas = Object.keys(grupos).map(function(k){ return grupos[k]; })
       .sort(function(a, b){ return b.pct - a.pct; });
     var box = document.createElement("div");
     box.className = "calif";
     box.innerHTML =
-      '<div class="chead"><span class="label">Participacion</span>' + estrellasHtml(d.estrellas) +
-        '<span class="sp"></span><span class="cprom">' + pctTxt(d.pct) + " promedio</span></div>" +
-      '<div class="cnota">' + (cal.previa ? "La ultima vez que se uso, el " : "Corrida del ") + esc(fechaCorta(cal.fecha)) +
+      '<div class="chead"><span class="label">Participacion</span>' + estrellasHtml(cal.estrellas) +
+        '<span class="sp"></span><span class="cprom">' + pctTxt(cal.pct) + " en " + cal.corridas +
+        (cal.corridas === 1 ? " corrida" : " corridas") + "</span></div>" +
+      '<div class="cnota">Ultima vez: ' + esc(fechaCorta(cal.ultima.fecha)) +
         " / " + filas.length + (filas.length === 1 ? " grupo medido" : " grupos medidos") + "</div>" +
       "<table>" + filas.map(function(g){
         return "<tr><td>" + esc(coName(g.companyId) || g.grupo) + "</td>" +
@@ -1733,6 +1757,12 @@ window.GALI.listo = new Promise(function(res, rej){
                        (it.grupos ? '<span class="lveces">' + it.grupos + (it.grupos === 1 ? " grupo" : " grupos") + "</span>" : "") +
                      "</div>" +
                      "<h4>" + esc(it.title || "Sin titulo") + "</h4>" +
+                     (function(){
+                       var c = it.type === "reto" ? califItem(it.id) : null;
+                       return c ? '<div class="lrate" title="Participacion promedio en los grupos">' +
+                         estrellasHtml(c.estrellas) + "<i>" + pctTxt(c.pct) + " / " + c.corridas +
+                         (c.corridas === 1 ? " corrida" : " corridas") + "</i></div>" : "";
+                     })() +
                      (it.img ? '<span class="thumb"><img src="' + it.img + '" alt=""></span>' : "") +
                      "<p>" + esc(it.copy) + "</p>";
 
