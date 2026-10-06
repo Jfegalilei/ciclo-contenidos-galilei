@@ -78,15 +78,20 @@ service cloud.firestore {
                   && request.resource.data.foto.size() < 950000)));
     }
 
-    // Logos de los clientes (ya en blanco), uno por compania. Sin borrar: para
-    // quitar un logo se deja `logo` vacio.
+    // Logos de los clientes (ya en blanco), uno por compania, su nombre escrito
+    // a mano y `ocultos`: lo que se apago en «Que mostrar» del reporte (training,
+    // reviews, metas; true = apagado), igual para todo el equipo. Sin borrar:
+    // para quitar un logo se deja `logo` vacio.
     match /clientes/{id} {
       allow read: if true;
       allow create, update: if id.matches('^[a-z0-9-]{1,48}$')
-        && request.resource.data.keys().hasOnly(['nombre', 'logo'])
+        && request.resource.data.keys().hasOnly(['nombre', 'logo', 'ocultos'])
         && (!('logo' in request.resource.data)
             || (request.resource.data.logo is string
-                && request.resource.data.logo.size() < 300000));
+                && request.resource.data.logo.size() < 300000))
+        && (!('ocultos' in request.resource.data)
+            || (request.resource.data.ocultos is map
+                && request.resource.data.ocultos.keys().hasOnly(['training', 'reviews', 'metas'])));
       allow delete: if false;
     }
 
