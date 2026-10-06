@@ -40,6 +40,15 @@ service cloud.firestore {
       allow read, write: if esDeGalilei();
     }
 
+    // Temporadas especiales (Halloween, Navidad...): el rango de fechas que
+    // aplaza el ciclo y lo programado para cada dia de la temporada.
+    match /temporadas/{id} {
+      allow read, write: if esDeGalilei();
+    }
+    match /temporadaPubs/{id} {
+      allow read, write: if esDeGalilei();
+    }
+
     // Estrellas de participacion de cada reto. Las escribe Chatmanager con la
     // cuenta de servicio (que no pasa por estas reglas); la pagina solo lee.
     match /calificaciones/{id} {
