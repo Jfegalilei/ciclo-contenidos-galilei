@@ -118,6 +118,14 @@ export function pubTemporadaDesdePieza(it, idTemporada, dia){
   return p;
 }
 
+// Al reves: un reto nuevo del calendario tambien queda en la libreria.
+export function piezaDesdePublicacion(p){
+  var it = piezaNueva();
+  it.type = p.type; it.familia = p.familia; it.operatividad = p.operatividad;
+  it.cds = (p.cds || []).slice(); it.img = p.img; it.title = p.title; it.copy = p.copy;
+  return it;
+}
+
 // Copia editable de cualquiera de los dos, para los formularios.
 export function copiar(x){
   var c = {};

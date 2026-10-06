@@ -8,7 +8,8 @@ import { DOW, hoy, ymd, parseYmd, larga } from "../dominio/fechas.js";
 import { inicioDeVuelta, vueltaSiguiente, vueltaAnterior, claveDeVuelta } from "../dominio/ciclo.js";
 import { esFija, etiquetaFija } from "../dominio/reglasFijas.js";
 import { diaDe, diaDePub, reglaDeFecha, etiquetaRegla } from "../dominio/temporadas.js";
-import { publicacionDesdePieza, pubTemporadaDesdePieza, esDeTemporada } from "../dominio/modelos.js";
+import { publicacionDesdePieza, pubTemporadaDesdePieza, piezaDesdePublicacion, esDeTemporada } from "../dominio/modelos.js";
+import { mismoTitulo } from "../dominio/participacion.js";
 import { buscarPublicacion, buscarPieza, enviosDe, celdaDe, fechaEnVuelta, pubsDeTemporada } from "./consultas.js";
 import { preferencias } from "./preferencias.js";
 
@@ -72,10 +73,20 @@ export function crearAcciones(dep){
       var fs = fechaEnVuelta(s(), p);
       if (fs) abrirEn(fs, p.id);
       var repo = deTemp ? dep.repos.pubsTemporada : dep.repos.plantilla;
-      dep.escribir(function(){ return repo.guardar(p); }).then(function(){
-        if (deTemp) avisos.toast(p.id ? "Cambios guardados en la temporada." : "Agregada a la temporada.");
-        else if (esFija(p)) avisos.toast((p.id ? "Fijada" : "Agregada y fijada") + " al " + etiquetaFija(p.fija) + (fs ? "." : ": no cae en esta vuelta."));
-        else avisos.toast(p.id ? "Cambios guardados en el ciclo." : "Agregada a la " + donde(p.week, p.dow) + ".");
+      // Toda publicacion NUEVA (reto, anuncio o recordatorio) tambien se
+      // guarda en la libreria, salvo que ya este: mismo titulo o, si no
+      // tiene titulo, mismo copy (por ejemplo, si salio de la libreria).
+      // Es una copia: editarla despues no cambia la pieza.
+      var aLib = !p.id && (p.title || p.copy) && !s().libreria.some(function(it){
+        return p.title ? mismoTitulo(it.title, p.title) : String(it.copy || "").trim() === String(p.copy).trim();
+      });
+      dep.escribir(function(){
+        return repo.guardar(p).then(function(){ return aLib ? dep.repos.libreria.guardar(piezaDesdePublicacion(p)) : null; });
+      }).then(function(){
+        var extra = aLib ? " Tambien quedo en la libreria." : "";
+        if (deTemp) avisos.toast((p.id ? "Cambios guardados en la temporada." : "Agregada a la temporada.") + extra);
+        else if (esFija(p)) avisos.toast((p.id ? "Fijada" : "Agregada y fijada") + " al " + etiquetaFija(p.fija) + (fs ? "." : ": no cae en esta vuelta.") + extra);
+        else avisos.toast((p.id ? "Cambios guardados en el ciclo." : "Agregada a la " + donde(p.week, p.dow) + ".") + extra);
       }, nada);
     },
     borrarPublicacion: function(p){
